@@ -12,6 +12,14 @@ build/
 *.ipr
 *.iws
 
+# Optional: Specific files inside .idea (more precise)
+.idea/caches
+.idea/libraries
+.idea/modules.xml
+.idea/workspace.xml
+.idea/navEditor.xml
+.idea/assetWizardSettings.xml
+
 # === Local config ===
 local.properties
 
