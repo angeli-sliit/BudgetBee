@@ -1,34 +1,34 @@
-# Gradle files
+# Gradle
 .gradle/
 build/
 */build/
+
+# Keep the wrapper jar but ignore other gradle cache
 !gradle/wrapper/gradle-wrapper.jar
 
-# Local configuration files
-local.properties
+# Android Studio
 .idea/
 *.iml
 *.ipr
 *.iws
 
-# Log & cache
+# Local config
+local.properties
+
+# Logs & temp files
 *.log
 *.cache
 *.class
 
-# Android Studio-specific
-/.idea/
-/*.iml
+# Native/NDK
 /.cxx/
+/.externalNativeBuild/
 /captures/
-/.externalNativeBuild
 
-# OS-specific files
+# System
 .DS_Store
 Thumbs.db
 
-# Keystore (if present)
+# Keystore
 *.jks
-
-# Signing info (security!)
 **/keystore.properties
