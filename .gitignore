@@ -1,4 +1,4 @@
-# Gradle
+# === Gradle ===
 .gradle/
 build/
 */build/
@@ -6,29 +6,45 @@ build/
 # Keep the wrapper jar but ignore other gradle cache
 !gradle/wrapper/gradle-wrapper.jar
 
-# Android Studio
+# === Android Studio ===
 .idea/
 *.iml
 *.ipr
 *.iws
 
-# Local config
+# === Local config ===
 local.properties
 
-# Logs & temp files
+# === Logs & temp files ===
 *.log
 *.cache
 *.class
+*.stacktrace
+*.hprof
 
-# Native/NDK
+# === Native/NDK ===
 /.cxx/
 /.externalNativeBuild/
 /captures/
 
-# System
+# === System files ===
 .DS_Store
 Thumbs.db
 
-# Keystore
+# === Keystore & secrets ===
 *.jks
 **/keystore.properties
+google-services.json
+
+# === Kotlin/Jetpack Compose (if used) ===
+.kapt/
+.ksp/
+
+# === Testing/Coverage (optional) ===
+*.ec
+coverage/
+
+# === Backup/Editor junk ===
+*~
+*.bak
+*.swp
