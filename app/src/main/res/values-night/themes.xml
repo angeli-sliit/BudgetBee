@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dark mode colors -->
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="gray">#B0B0B0</color>
+
+    <!-- BudgetBee Theme Dark -->
+    <color name="primary">#81C784</color> <!-- Lighter green for dark bg -->
+    <color name="primary_dark">#66BB6A</color>
+    <color name="accent">#FFD54F</color> <!-- Softer honey -->
+    <color name="secondary">#FFB300</color> <!-- Deeper amber -->
+    <color name="background">#121212</color> <!-- True dark bg -->
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#B0B0B0</color>
+
+    <!-- Income & Expense -->
+    <color name="income_color">#81C784</color>
+    <color name="expense_color">#E57373</color>
+
+    <!-- Optional UI Colors -->
+    <color name="button_color">#26A69A</color> <!-- Cool teal -->
+    <color name="card_bg">#1E1E1E</color>
+</resources>

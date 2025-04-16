@@ -1,0 +1,47 @@
+<resources>
+    <string name="app_name">BudgetBee</string>
+
+    <!-- Navigation -->
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_transactions">Transactions</string>
+    <string name="title_settings">Settings</string>
+
+    <!-- Transaction Form -->
+    <string name="hint_title">Title</string>
+    <string name="hint_amount">Amount</string>
+    <string name="hint_date">Date</string>
+    <string name="income">Income</string>
+    <string name="expense">Expense</string>
+    <string name="save">Save</string>
+
+    <!-- Settings -->
+    <string name="monthly_budget">Monthly Budget</string>
+    <string name="select_currency">Select Currency</string>
+    <string name="save_settings">Save Settings</string>
+    <string name="export_data">Export Data</string>
+    <string name="import_data">Import Data</string>
+    <string name="reminder_title">Budget Reminder</string>
+    <string name="reminder_message">Don\'t forget to record your expenses today!</string>
+    <string name="category_analysis">Category Analysis</string>
+    <string name="no_transactions">No transactions found</string>
+    <string name="budget_warning">You\'re approaching your budget limit!</string>
+    <string name="budget_exceeded">You\'ve exceeded your budget!</string>
+    <!-- Categories -->
+    <string-array name="categories">
+        <item>Food</item>
+        <item>Transport</item>
+        <item>Bills</item>
+        <item>Entertainment</item>
+        <item>Other</item>
+    </string-array>
+
+    <!-- Currencies -->
+    <string-array name="currencies">
+        <item>$</item>
+        <item>€</item>
+        <item>£</item>
+        <item>¥</item>
+        <item>₹</item>
+        <item>LKR</item>
+    </string-array>
+</resources>
