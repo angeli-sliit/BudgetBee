@@ -1,5 +1,6 @@
 package com.example.budgetbee.fragments
 
+import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -41,6 +42,7 @@ class AddTransactionFragment : Fragment() {
         setupDatePicker()
         setupEditMode()
         setupSaveButton()
+        setupToggleListener()
     }
 
     private fun setupCategorySpinner() {
@@ -84,6 +86,7 @@ class AddTransactionFragment : Fragment() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setupEditMode() {
         args.transaction?.let { transaction ->
             isEditMode = true
@@ -91,9 +94,18 @@ class AddTransactionFragment : Fragment() {
             binding.etTitle.setText(transaction.title)
             binding.etAmount.setText(transaction.amount.toString())
             binding.etDate.setText(transaction.date)
-            binding.spCategory.setSelection(
-                (binding.spCategory.adapter as ArrayAdapter<String>).getPosition(transaction.category)
-            )
+
+            // Fixed unchecked cast warning
+            val adapter = binding.spCategory.adapter as? ArrayAdapter<*>
+            if (adapter != null) {
+                val position = (0 until adapter.count).indexOfFirst {
+                    adapter.getItem(it).toString() == transaction.category
+                }
+                if (position != -1) {
+                    binding.spCategory.setSelection(position)
+                }
+            }
+
             binding.toggleType.check(
                 if (transaction.type == "Income") R.id.btnIncome else R.id.btnExpense
             )
@@ -173,6 +185,29 @@ class AddTransactionFragment : Fragment() {
             category = binding.spCategory.selectedItem.toString(),
             date = binding.etDate.text.toString().trim()
         )
+    }
+
+    private fun setupToggleListener() {
+        binding.toggleType.addOnButtonCheckedListener { _, checkedId, isChecked ->
+            if (isChecked) {
+                val incomeColor = requireContext().getColor(R.color.income_color)
+                val expenseColor = requireContext().getColor(R.color.expense_color)
+                val defaultBg = requireContext().getColor(R.color.background)
+
+                // Reset colors
+                binding.btnIncome.setBackgroundColor(defaultBg)
+                binding.btnExpense.setBackgroundColor(defaultBg)
+
+                when (checkedId) {
+                    R.id.btnIncome -> {
+                        binding.btnIncome.setBackgroundColor(incomeColor)
+                    }
+                    R.id.btnExpense -> {
+                        binding.btnExpense.setBackgroundColor(expenseColor)
+                    }
+                }
+            }
+        }
     }
 
     override fun onDestroyView() {

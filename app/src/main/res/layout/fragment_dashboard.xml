@@ -14,24 +14,25 @@
         <!-- Header with settings button -->
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="102dp"
             android:layout_marginBottom="16dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="BudgetBee"
-                android:textSize="24sp"
-                android:textStyle="bold"/>
+
+            <ImageView
+                android:id="@+id/imgLogo"
+                android:layout_width="132dp"
+                android:layout_height="97dp"
+                android:layout_centerHorizontal="true"
+                android:contentDescription="@string/app_logo"
+                android:src="@drawable/oip_removebg_preview__1_" />
 
             <ImageButton
                 android:id="@+id/btnSettings"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:contentDescription="TODO"
-                android:src="@drawable/ic_settings"
                 android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="TODO"
                 tools:ignore="ContentDescription,HardcodedText" />
         </RelativeLayout>
 
@@ -87,7 +88,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Income"
-                        android:textColor="@color/black"/>
+                        android:textColor="@color/black" />
 
                     <TextView
                         android:id="@+id/tvIncome"
@@ -97,7 +98,7 @@
                         android:text="$0.00"
                         android:textColor="@color/income_color"
                         android:textSize="18sp"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -171,30 +172,35 @@
         <com.github.mikephil.charting.charts.PieChart
             android:id="@+id/pieChart"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_marginTop="16dp"/>
+            android:layout_height="268dp"
+            android:layout_marginTop="16dp" />
 
         <!-- Top Categories Header -->
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="34dp"
             android:layout_marginTop="24dp">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:id="@+id/textView2"
+                android:layout_width="244dp"
+                android:layout_height="match_parent"
                 android:text="Top Spending Categories"
                 android:textSize="18sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
             <Button
                 android:id="@+id/btnViewAllCategories"
                 style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="127dp"
+                android:layout_height="match_parent"
                 android:layout_alignParentEnd="true"
+                android:layout_marginStart="-2dp"
+                android:layout_marginEnd="9dp"
+                android:layout_toEndOf="@+id/textView2"
                 android:text="View All"
-                android:textColor="#000000" />
+                android:textColor="#000000"
+                android:textSize="10sp" />
         </RelativeLayout>
 
         <LinearLayout

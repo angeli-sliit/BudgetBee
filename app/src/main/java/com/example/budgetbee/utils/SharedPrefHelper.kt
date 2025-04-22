@@ -9,9 +9,10 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class SharedPrefHelper(private val context: Context) {
-    val sharedPref: SharedPreferences =
+    private val sharedPref: SharedPreferences =
         context.getSharedPreferences("BudgetBeePrefs", Context.MODE_PRIVATE)
     private val gson = Gson()
+    private var lastBudgetAlertShown = false
 
     var currency: String
         get() = sharedPref.getString("currency", "$") ?: "$"
@@ -20,10 +21,6 @@ class SharedPrefHelper(private val context: Context) {
     var monthlyBudget: Double
         get() = sharedPref.getFloat("monthlyBudget", 0f).toDouble()
         set(value) = sharedPref.edit().putFloat("monthlyBudget", value.toFloat()).apply()
-
-    var lastBudgetAlertShown: Boolean
-        get() = sharedPref.getBoolean("lastBudgetAlertShown", false)
-        set(value) = sharedPref.edit().putBoolean("lastBudgetAlertShown", value).apply()
 
     var dailyReminderEnabled: Boolean
         get() = sharedPref.getBoolean("dailyReminder", true)
@@ -62,6 +59,10 @@ class SharedPrefHelper(private val context: Context) {
         } else if (progress < 80) {
             lastBudgetAlertShown = false
         }
+    }
+
+    fun getFormattedAmount(amount: Double): String {
+        return String.format(Locale.getDefault(), "$currency%.2f", amount)
     }
 
     fun getMonthlyExpenses(): Double {

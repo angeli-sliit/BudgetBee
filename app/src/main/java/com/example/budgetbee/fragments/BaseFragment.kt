@@ -12,13 +12,5 @@ abstract class BaseFragment : Fragment() {
         sharedPrefHelper = SharedPrefHelper(context) // Remove requireContext() here
     }
 
-    protected fun registerForUpdates() {
-        sharedPrefHelper.sharedPref.registerOnSharedPreferenceChangeListener { _, key ->
-            if (key == "transactions" || key == "monthlyBudget") {
-                updateUI()
-            }
-        }
-    }
-
     abstract fun updateUI()
 }

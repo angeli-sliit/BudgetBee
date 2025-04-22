@@ -27,7 +27,8 @@
                 android:id="@+id/etBudget"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="numberDecimal"/>
+                android:background="@color/white"
+                android:inputType="numberDecimal" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Currency Selection -->
@@ -80,7 +81,7 @@
             android:textStyle="bold"/>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnExport"
+            android:id="@+id/btnExportPdf"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
