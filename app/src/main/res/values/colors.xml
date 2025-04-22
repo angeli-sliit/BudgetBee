@@ -21,4 +21,12 @@
     <!-- Optional UI Colors -->
     <color name="button_color">#009688</color> <!-- Teal action -->
     <color name="card_bg">#FFFFFF</color>
+
+
+
+
+
+    <color name="income_background">#E8F5E9</color>
+    <color name="expense_background">#FFEBEE</color>
+
 </resources>

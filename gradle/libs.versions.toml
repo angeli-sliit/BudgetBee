@@ -15,6 +15,7 @@ lifecycle = "2.7.0"
 gson = "2.10.1"
 materialDateTimePicker = "4.2.3"
 mpAndroidChart = "3.1.0"
+uiGraphicsAndroid = "1.7.8"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -34,6 +35,7 @@ androidx-lifecycle-runtime = { group = "androidx.lifecycle", name = "lifecycle-r
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 material-datetime-picker = { group = "com.wdullaer", name = "materialdatetimepicker", version.ref = "materialDateTimePicker" }
 mp-android-chart = { group = "com.github.PhilJay", name = "MPAndroidChart", version.ref = "mpAndroidChart" }
+androidx-ui-graphics-android = { group = "androidx.compose.ui", name = "ui-graphics-android", version.ref = "uiGraphicsAndroid" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

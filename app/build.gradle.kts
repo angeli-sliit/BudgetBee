@@ -68,6 +68,7 @@ dependencies {
 
     // Firebase Crashlytics
     implementation(libs.firebase.crashlytics.buildtools)
+    implementation(libs.androidx.ui.graphics.android)
 
     // Testing
     testImplementation(libs.junit)
@@ -83,4 +84,10 @@ dependencies {
 
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
     implementation("androidx.core:core-ktx:1.12.0")
+
+    implementation ("com.google.android.material:material:1.11.0")
+    implementation ("androidx.activity:activity-ktx:1.8.0")
+    implementation ("androidx.fragment:fragment-ktx:1.6.1")
+
+    implementation ("com.google.code.gson:gson:2.10.1")
 }

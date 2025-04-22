@@ -1,15 +1,20 @@
 package com.example.budgetbee.adapters
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.budgetbee.R
 import com.example.budgetbee.databinding.ItemTransactionBinding
 import com.example.budgetbee.models.Transaction
+import com.example.budgetbee.utils.SharedPrefHelper
 
 class TransactionAdapter(
-    private var transactions: List<Transaction>,
+    var transactions: List<Transaction>,
     private val onEdit: (Transaction) -> Unit,
-    private val onDelete: (Transaction) -> Unit
+    private val onDelete: (Transaction) -> Unit,
+    private val sharedPrefHelper: SharedPrefHelper,
+    private val context: Context
 ) : RecyclerView.Adapter<TransactionAdapter.TransactionViewHolder>() {
 
     inner class TransactionViewHolder(private val binding: ItemTransactionBinding) :
@@ -18,9 +23,15 @@ class TransactionAdapter(
         fun bind(transaction: Transaction) {
             binding.apply {
                 txtTitle.text = transaction.title
-                txtAmount.text = "${if (transaction.type == "Expense") "-" else "+"}$${"%.2f".format(transaction.amount)}"
+                txtAmount.text = sharedPrefHelper.getFormattedAmount(transaction.amount)
                 txtCategory.text = transaction.category
                 txtDate.text = transaction.date
+
+                if (transaction.type == "Expense") {
+                    txtAmount.setTextColor(context.getColor(R.color.expense_color))
+                } else {
+                    txtAmount.setTextColor(context.getColor(R.color.income_color))
+                }
 
                 root.setOnClickListener { onEdit(transaction) }
                 root.setOnLongClickListener {

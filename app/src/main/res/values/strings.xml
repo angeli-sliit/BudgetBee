@@ -26,6 +26,8 @@
     <string name="no_transactions">No transactions found</string>
     <string name="budget_warning">You\'re approaching your budget limit!</string>
     <string name="budget_exceeded">You\'ve exceeded your budget!</string>
+    <string name="budgetbee">BudgetBee</string>
+    <string name="save_transaction">Save Transaction</string>
     <!-- Categories -->
     <string-array name="categories">
         <item>Food</item>
@@ -44,4 +46,17 @@
         <item>₹</item>
         <item>LKR</item>
     </string-array>
+
+
+
+
+
+    <string name="add_transaction">Add Transaction</string>
+    <string name="title">Title</string>
+    <string name="amount">Amount</string>
+    <string name="date">Date</string>
+    <string name="category">Category</string>
+    <string name="transaction_type">Transaction Type</string>
+    <string name="currency_symbol">$</string>
+    <string name="app_logo" />
 </resources>
