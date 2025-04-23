@@ -99,11 +99,11 @@ class DashboardFragment : Fragment() {
             colors = listOf(
                 ContextCompat.getColor(requireContext(), R.color.primary),
                 ContextCompat.getColor(requireContext(), R.color.primary_dark),
-                ContextCompat.getColor(requireContext(), R.color.accent),
                 ContextCompat.getColor(requireContext(), R.color.secondary),
                 ContextCompat.getColor(requireContext(), R.color.button_color),
-                ContextCompat.getColor(requireContext(), R.color.income_color),
-                ContextCompat.getColor(requireContext(), R.color.expense_color)
+                ContextCompat.getColor(requireContext(), R.color.expense_color),
+                ContextCompat.getColor(requireContext(), R.color.accent),
+                ContextCompat.getColor(requireContext(), R.color.income_color)
             )
             valueTextColor = ContextCompat.getColor(requireContext(), R.color.white)
             valueTextSize = 12f

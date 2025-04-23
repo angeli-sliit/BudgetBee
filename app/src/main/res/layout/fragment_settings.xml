@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,10 +14,10 @@
         <!-- Budget -->
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="35dp"
             android:text="Monthly Budget"
             android:textSize="18sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
@@ -27,7 +28,6 @@
                 android:id="@+id/etBudget"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
                 android:inputType="numberDecimal" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -69,9 +69,9 @@
             android:layout_marginTop="24dp"
             android:text="Save Settings"
             app:icon="@drawable/ic_save"
-            app:iconGravity="start"/>
+            app:iconGravity="start" />
 
-        <!-- Export/Import Section -->
+        <!-- Data Management Section -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -80,22 +80,48 @@
             android:textSize="18sp"
             android:textStyle="bold"/>
 
+        <!-- Export Section -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Export Data"
+            android:textStyle="italic"/>
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnExportPdf"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Export Data"
+            android:layout_marginTop="4dp"
+            android:text="Export as PDF"
             app:icon="@drawable/ic_export"
             app:iconGravity="start"/>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnImport"
+            android:id="@+id/btnExportJson"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
+            android:text="Export as JSON"
+            app:icon="@drawable/ic_export"
+            app:iconGravity="start"/>
+
+        <!-- Import Section -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:text="Import Data"
+            android:textStyle="italic"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnImportJson"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Import from JSON"
             app:icon="@drawable/ic_import"
             app:iconGravity="start"/>
+
     </LinearLayout>
 </ScrollView>
