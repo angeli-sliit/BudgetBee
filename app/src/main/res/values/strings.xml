@@ -1,20 +1,22 @@
 <resources>
     <string name="app_name">BudgetBee</string>
-
-    <!-- Navigation -->
     <string name="title_dashboard">Dashboard</string>
     <string name="title_transactions">Transactions</string>
     <string name="title_settings">Settings</string>
-
-    <!-- Transaction Form -->
     <string name="hint_title">Title</string>
     <string name="hint_amount">Amount</string>
     <string name="hint_date">Date</string>
     <string name="income">Income</string>
     <string name="expense">Expense</string>
     <string name="save">Save</string>
-
-    <!-- Settings -->
+    <string name="add_transaction">Add Transaction</string>
+    <string name="title">Title</string>
+    <string name="amount">Amount</string>
+    <string name="date">Date</string>
+    <string name="category">Category</string>
+    <string name="transaction_type">Transaction Type</string>
+    <string name="currency_symbol">$</string>
+    <string name="app_logo" />
     <string name="monthly_budget">Monthly Budget</string>
     <string name="select_currency">Select Currency</string>
     <string name="save_settings">Save Settings</string>
@@ -28,7 +30,16 @@
     <string name="budget_exceeded">You\'ve exceeded your budget!</string>
     <string name="budgetbee">BudgetBee</string>
     <string name="save_transaction">Save Transaction</string>
-    <!-- Categories -->
+    <string name="import_success">Import Successful</string>
+    <string name="transactions_imported">transactions imported</string>
+    <string name="import_failed">Import Failed</string>
+    <string name="default_import_error">Failed to import data</string>
+    <string name="export_success">Export Successful</string>
+    <string name="export_completed">export completed</string>
+    <string name="export_failed">Export Failed</string>
+    <string name="export_failed_message">export failed</string>
+
+
     <string-array name="categories">
         <item>Food</item>
         <item>Transport</item>
@@ -37,7 +48,6 @@
         <item>Other</item>
     </string-array>
 
-    <!-- Currencies -->
     <string-array name="currencies">
         <item>$</item>
         <item>€</item>
@@ -47,16 +57,4 @@
         <item>LKR</item>
     </string-array>
 
-
-
-
-
-    <string name="add_transaction">Add Transaction</string>
-    <string name="title">Title</string>
-    <string name="amount">Amount</string>
-    <string name="date">Date</string>
-    <string name="category">Category</string>
-    <string name="transaction_type">Transaction Type</string>
-    <string name="currency_symbol">$</string>
-    <string name="app_logo" />
 </resources>

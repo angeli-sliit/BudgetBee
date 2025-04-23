@@ -6,27 +6,25 @@
     <color name="gray">#808080</color>
 
     <!-- BudgetBee Theme -->
-    <color name="primary">#4CAF50</color> <!-- Money green -->
-    <color name="primary_dark">#2E7D32</color> <!-- Deeper finance green -->
-    <color name="accent">#FFCC00</color> <!-- Honey Yellow -->
-    <color name="secondary">#FFC107</color> <!-- Amber for buttons -->
-    <color name="background">#FFF8E1</color> <!-- Light Beige -->
-    <color name="text_primary">#212121</color> <!-- Charcoal -->
+    <color name="primary">#4CAF50</color>
+    <color name="primary_dark">#2E7D32</color>
+    <color name="accent">#FFCC00</color>
+    <color name="secondary">#FFC107</color>
+    <color name="background">#FFF8E1</color>
+    <color name="text_primary">#212121</color>
     <color name="text_secondary">#424242</color>
 
     <!-- Income & Expense -->
     <color name="income_color">#4CAF50</color>
     <color name="expense_color">#F44336</color>
+    <color name="income_background">#E8F5E9</color>
+    <color name="expense_background">#FFEBEE</color>
 
-    <!-- Optional UI Colors -->
-    <color name="button_color">#009688</color> <!-- Teal action -->
+
+    <color name="button_color">#009688</color>
     <color name="card_bg">#FFFFFF</color>
 
 
 
-
-
-    <color name="income_background">#E8F5E9</color>
-    <color name="expense_background">#FFEBEE</color>
 
 </resources>

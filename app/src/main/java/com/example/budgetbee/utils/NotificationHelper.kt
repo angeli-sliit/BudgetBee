@@ -23,6 +23,9 @@ object NotificationHelper {
     private const val EXPORT_CHANNEL_ID = "export_channel"
     private const val EXPORT_SUCCESS_ID = 1004
     private const val BUDGET_UPDATE_ID = 1005
+    private const val IMPORT_CHANNEL_ID = "import_channel"
+    private const val IMPORT_SUCCESS_ID = 1006
+    private const val IMPORT_FAILURE_ID = 1007
 
     fun createNotificationChannel(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -82,12 +85,29 @@ object NotificationHelper {
                 enableLights(true)
                 lightColor = Color.GREEN
             }
-
+            val importChannel = NotificationChannel(
+                IMPORT_CHANNEL_ID,
+                "Imports",
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                description = "Import status notifications"
+                enableVibration(true)
+                vibrationPattern = longArrayOf(500, 500, 500)
+                setSound(
+                    RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION),
+                    AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                        .build()
+                )
+                enableLights(true)
+                lightColor = Color.YELLOW
+            }
 
             val notificationManager = context.getSystemService(NotificationManager::class.java)
             notificationManager.createNotificationChannel(budgetChannel)
             notificationManager.createNotificationChannel(reminderChannel)
             notificationManager.createNotificationChannel(exportChannel)
+            notificationManager.createNotificationChannel(importChannel)
         }
     }
 
@@ -180,7 +200,51 @@ object NotificationHelper {
             progress < 50 -> prefs.edit().putInt("lastBudgetNotif", 0).apply()
         }
     }
-    fun showExportSuccess(context: Context) {
+    // Add these new methods for Import/Export notifications
+    fun showImportSuccess(context: Context, count: Int) {
+        val intent = Intent(context, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+
+        val pendingIntent = PendingIntent.getActivity(
+            context,
+            0,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        val notification = NotificationCompat.Builder(context, IMPORT_CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_notification)
+            .setContentTitle(context.getString(R.string.import_success))
+            .setContentText("$count ${context.getString(R.string.transactions_imported)}")
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
+            .setVibrate(longArrayOf(500, 500, 500))
+            .setLights(Color.YELLOW, 1000, 1000)
+            .build()
+
+        (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
+            .notify(IMPORT_SUCCESS_ID, notification)
+    }
+
+    fun showImportFailure(context: Context, error: String? = null) {
+        val notification = NotificationCompat.Builder(context, IMPORT_CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_notification)
+            .setContentTitle(context.getString(R.string.import_failed))
+            .setContentText(error ?: context.getString(R.string.default_import_error))
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setAutoCancel(true)
+            .setVibrate(longArrayOf(1000, 1000))
+            .setLights(Color.RED, 1000, 1000)
+            .build()
+
+        (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
+            .notify(IMPORT_FAILURE_ID, notification)
+    }
+
+    // Update existing export methods
+    fun showExportSuccess(context: Context, type: String) {
         val intent = Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
@@ -194,8 +258,8 @@ object NotificationHelper {
 
         val notification = NotificationCompat.Builder(context, EXPORT_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification)
-            .setContentTitle("Export Successful")
-            .setContentText("PDF report saved to Downloads")
+            .setContentTitle(context.getString(R.string.export_success))
+            .setContentText("${type.uppercase()} ${context.getString(R.string.export_completed)}")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
@@ -205,11 +269,11 @@ object NotificationHelper {
             .notify(EXPORT_SUCCESS_ID, notification)
     }
 
-    fun showExportFailure(context: Context) {
+    fun showExportFailure(context: Context, type: String) {
         val notification = NotificationCompat.Builder(context, EXPORT_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification)
-            .setContentTitle("Export Failed")
-            .setContentText("Failed to generate PDF report")
+            .setContentTitle(context.getString(R.string.export_failed))
+            .setContentText("${type.uppercase()} ${context.getString(R.string.export_failed_message)}")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
             .build()

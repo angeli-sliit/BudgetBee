@@ -6,6 +6,7 @@ import android.content.Context
 import android.graphics.BitmapFactory
 import android.graphics.Paint
 import android.graphics.pdf.PdfDocument
+import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
@@ -21,34 +22,42 @@ import java.util.*
 object FileHelper {
     private const val BACKUP_FILE = "budgetbee_backup.json"
 
-    fun exportToFile(context: Context, transactions: List<Transaction>): Boolean {
+    @RequiresApi(Build.VERSION_CODES.Q)
+    fun exportToJson(context: Context, transactions: List<Transaction>): Boolean {
         return try {
             val json = Gson().toJson(transactions)
-            context.openFileOutput(BACKUP_FILE, Context.MODE_PRIVATE).use {
-                it.write(json.toByteArray())
-            }
+            saveToDownloads(context, json, "application/json", "budgetbee_export.json")
             true
         } catch (e: Exception) {
-            Log.e("FileHelper", "Export failed: ${e.message}", e)
+            Log.e("FileHelper", "JSON export failed", e)
             false
         }
     }
 
-    fun importFromFile(context: Context): List<Transaction>? {
+    @SuppressLint("ObsoleteSdkInt")
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private fun saveToDownloads(
+        context: Context,
+        content: String,
+        mimeType: String,
+        fileName: String
+    ): Boolean {
         return try {
-            context.openFileInput(BACKUP_FILE).bufferedReader().use {
-                val json = it.readText()
-                val type = object : TypeToken<List<Transaction>>() {}.type
-                Gson().fromJson(json, type)
+            val resolver = context.contentResolver
+            val contentValues = ContentValues().apply {
+                put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
+                put(MediaStore.MediaColumns.MIME_TYPE, mimeType)
+                put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
             }
-        } catch (e: Exception) {
-            Log.e("FileHelper", "Import failed: ${e.message}", e)
-            null
-        }
-    }
 
-    fun backupExists(context: Context): Boolean {
-        return context.getFileStreamPath(BACKUP_FILE).exists()
+            val uri = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, contentValues)
+                ?: return false
+            resolver.openOutputStream(uri)?.use { it.write(content.toByteArray()) }
+            true
+        } catch (e: Exception) {
+            Log.e("FileHelper", "Save failed", e)
+            false
+        }
     }
 
     @SuppressLint("ObsoleteSdkInt")
@@ -63,7 +72,7 @@ object FileHelper {
             val page = pdfDocument.startPage(pageInfo)
             val canvas = page.canvas
             val paint = Paint()
-            var yPos = 100f
+            var yPos: Float
 
             // Draw logo
             val logoBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.oip_removebg_preview__1_)
@@ -140,11 +149,9 @@ object FileHelper {
             val uri = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, contentValues) ?: return false
             resolver.openOutputStream(uri)?.use { pdfDocument.writeTo(it) }
 
-            NotificationHelper.showExportSuccess(context)
             true
         } catch (e: Exception) {
             Log.e("PDF Export", "Error: ${e.message}", e)
-            NotificationHelper.showExportFailure(context)
             false
         } finally {
             pdfDocument.close()
