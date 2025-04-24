@@ -13,6 +13,7 @@ import androidx.navigation.fragment.navArgs
 import com.example.budgetbee.R
 import com.example.budgetbee.databinding.FragmentAddTransactionBinding
 import com.example.budgetbee.models.Transaction
+import com.example.budgetbee.models.TransactionType
 import com.example.budgetbee.utils.SharedPrefHelper
 import com.google.android.material.snackbar.Snackbar
 import java.text.SimpleDateFormat
@@ -25,7 +26,8 @@ class AddTransactionFragment : Fragment() {
     private lateinit var sharedPrefHelper: SharedPrefHelper
     private val args: AddTransactionFragmentArgs by navArgs()
     private var isEditMode = false
-    private lateinit var transactionId: String
+    private var transactionId: String = "0"
+    private var selectedCategory: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,21 +40,19 @@ class AddTransactionFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupCategorySpinner()
+        setupCategoryDropdown()
         setupDatePicker()
         setupEditMode()
         setupSaveButton()
         setupToggleListener()
     }
 
-    private fun setupCategorySpinner() {
-        ArrayAdapter.createFromResource(
-            requireContext(),
-            R.array.categories,
-            android.R.layout.simple_spinner_item
-        ).also { adapter ->
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            binding.spCategory.adapter = adapter
+    private fun setupCategoryDropdown() {
+        val categories = resources.getStringArray(R.array.categories)
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, categories)
+        binding.spCategory.setAdapter(adapter)
+        binding.spCategory.setOnItemClickListener { _, _, position, _ ->
+            selectedCategory = categories[position]
         }
     }
 
@@ -93,21 +93,13 @@ class AddTransactionFragment : Fragment() {
             transactionId = transaction.id
             binding.etTitle.setText(transaction.title)
             binding.etAmount.setText(transaction.amount.toString())
-            binding.etDate.setText(transaction.date)
-
-            // Fixed unchecked cast warning
-            val adapter = binding.spCategory.adapter as? ArrayAdapter<*>
-            if (adapter != null) {
-                val position = (0 until adapter.count).indexOfFirst {
-                    adapter.getItem(it).toString() == transaction.category
-                }
-                if (position != -1) {
-                    binding.spCategory.setSelection(position)
-                }
-            }
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            binding.etDate.setText(dateFormat.format(transaction.date))
+            binding.spCategory.setText(transaction.category)
+            selectedCategory = transaction.category
 
             binding.toggleType.check(
-                if (transaction.type == "Income") R.id.btnIncome else R.id.btnExpense
+                if (transaction.type == TransactionType.INCOME) R.id.btnIncome else R.id.btnExpense
             )
         }
     }
@@ -122,6 +114,7 @@ class AddTransactionFragment : Fragment() {
         val title = binding.etTitle.text.toString().trim()
         val amountStr = binding.etAmount.text.toString().trim()
         val date = binding.etDate.text.toString().trim()
+        val category = binding.spCategory.text.toString().trim()
 
         return when {
             title.isEmpty() -> {
@@ -134,6 +127,10 @@ class AddTransactionFragment : Fragment() {
             }
             date.isEmpty() -> {
                 binding.etDate.error = "Please select date"
+                false
+            }
+            category.isEmpty() -> {
+                binding.spCategory.error = "Please select category"
                 false
             }
             amountStr.toDoubleOrNull() == null -> {
@@ -181,9 +178,11 @@ class AddTransactionFragment : Fragment() {
             id = if (isEditMode) transactionId else UUID.randomUUID().toString(),
             title = binding.etTitle.text.toString().trim(),
             amount = binding.etAmount.text.toString().toDouble(),
-            type = if (binding.toggleType.checkedButtonId == R.id.btnIncome) "Income" else "Expense",
-            category = binding.spCategory.selectedItem.toString(),
-            date = binding.etDate.text.toString().trim()
+            type = if (binding.toggleType.checkedButtonId == R.id.btnIncome) TransactionType.INCOME else TransactionType.EXPENSE,
+            category = selectedCategory.ifEmpty { binding.spCategory.text.toString() },
+            date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(binding.etDate.text.toString())!!,
+            description = null,
+            receiptImagePath = null
         )
     }
 

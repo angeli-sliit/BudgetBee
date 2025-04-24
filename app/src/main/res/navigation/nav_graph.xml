@@ -11,6 +11,15 @@
         android:label="Dashboard"
         tools:layout="@layout/fragment_dashboard">
         <action
+            android:id="@+id/action_dashboardFragment_to_transactionsFragment"
+            app:destination="@id/transactionsFragment" />
+        <action
+            android:id="@+id/action_dashboardFragment_to_addTransactionFragment"
+            app:destination="@id/addTransactionFragment" />
+        <action
+            android:id="@+id/action_dashboardFragment_to_budgetFragment"
+            app:destination="@id/budgetFragment" />
+        <action
             android:id="@+id/action_dashboardFragment_to_settingsFragment"
             app:destination="@id/settingsFragment" />
         <action
@@ -51,4 +60,10 @@
         android:name="com.example.budgetbee.fragments.CategoryFragment"
         android:label="Category Analysis"
         tools:layout="@layout/fragment_category_analysis" />
+
+    <fragment
+        android:id="@+id/budgetFragment"
+        android:name="com.example.budgetbee.fragments.BudgetFragment"
+        android:label="Budget"
+        tools:layout="@layout/fragment_budget" />
 </navigation>

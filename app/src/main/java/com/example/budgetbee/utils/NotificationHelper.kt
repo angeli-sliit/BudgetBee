@@ -13,21 +13,36 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.example.budgetbee.R
 import com.example.budgetbee.activities.MainActivity
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
+import javax.inject.Singleton
 
-object NotificationHelper {
-    private const val CHANNEL_ID = "budget_bee_channel"
-    private const val REMINDER_CHANNEL_ID = "reminder_channel"
-    private const val BUDGET_ALERT_ID = 1001
-    private const val DAILY_REMINDER_ID = 1002
-    private const val BUDGET_WARNING_ID = 1003
-    private const val EXPORT_CHANNEL_ID = "export_channel"
-    private const val EXPORT_SUCCESS_ID = 1004
-    private const val BUDGET_UPDATE_ID = 1005
-    private const val IMPORT_CHANNEL_ID = "import_channel"
-    private const val IMPORT_SUCCESS_ID = 1006
-    private const val IMPORT_FAILURE_ID = 1007
+@Singleton
+class NotificationHelper @Inject constructor(
+    @ApplicationContext private val context: Context
+) {
+    companion object {
+        const val REMINDER_CHANNEL_ID = "reminder_channel"
+    }
 
-    fun createNotificationChannel(context: Context) {
+    private val CHANNEL_ID = "budget_bee_channel"
+    private  val BUDGET_ALERT_ID = 1001
+    private  val DAILY_REMINDER_ID = 1002
+    private val BUDGET_WARNING_ID = 1003
+    private val EXPORT_CHANNEL_ID = "export_channel"
+    private val EXPORT_SUCCESS_ID = 1004
+    private val BUDGET_UPDATE_ID = 1005
+    private val IMPORT_CHANNEL_ID = "import_channel"
+    private val IMPORT_SUCCESS_ID = 1006
+    private val IMPORT_FAILURE_ID = 1007
+
+    private val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+    init {
+        createNotificationChannel()
+    }
+
+    private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Budget Alerts Channel
             val budgetChannel = NotificationChannel(
@@ -49,7 +64,7 @@ object NotificationHelper {
                 lightColor = Color.RED
                 lockscreenVisibility = Notification.VISIBILITY_PUBLIC
             }
-// Export Channel
+            // Export Channel
             val exportChannel = NotificationChannel(
                 EXPORT_CHANNEL_ID,
                 "Exports",
@@ -103,7 +118,6 @@ object NotificationHelper {
                 lightColor = Color.YELLOW
             }
 
-            val notificationManager = context.getSystemService(NotificationManager::class.java)
             notificationManager.createNotificationChannel(budgetChannel)
             notificationManager.createNotificationChannel(reminderChannel)
             notificationManager.createNotificationChannel(exportChannel)
@@ -111,97 +125,70 @@ object NotificationHelper {
         }
     }
 
-    fun showDailyReminder(context: Context) {
-        val intent = Intent(context, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        }
-
+    fun showDailyReminder() {
+        val intent = Intent(context, MainActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(
             context,
-            0,
+            1,
             intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            PendingIntent.FLAG_IMMUTABLE
         )
 
         val notification = NotificationCompat.Builder(context, REMINDER_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification)
-            .setContentTitle(context.getString(R.string.reminder_title))
-            .setContentText(context.getString(R.string.reminder_message))
-            .setPriority(NotificationCompat.PRIORITY_MAX)
-            .setContentIntent(pendingIntent)
+            .setContentTitle("Daily Reminder")
+            .setContentText("Don't forget to record your expenses today!")
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setAutoCancel(true)
-            .setVibrate(longArrayOf(1000, 1000, 1000))
-            .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-            .setLights(Color.GREEN, 1000, 1000)
+            .setContentIntent(pendingIntent)
             .build()
 
-        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE)
-                as NotificationManager
-        notificationManager.notify(DAILY_REMINDER_ID, notification)
+        notificationManager.notify(2, notification)
     }
 
-    fun showBudgetAlert(context: Context, progress: Int) {
-        val intent = Intent(context, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        }
+    fun showBudgetAlert(title: String, message: String) {
+        val intent = Intent(context, MainActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(
             context,
             0,
             intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            PendingIntent.FLAG_IMMUTABLE
         )
-
-        val title = if (progress >= 100) {
-            context.getString(R.string.budget_exceeded)
-        } else {
-            context.getString(R.string.budget_warning)
-        }
-
-        val message = if (progress >= 100) {
-            "You've spent $progress% of your budget!"
-        } else {
-            "You've spent $progress% of your budget"
-        }
 
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(title)
             .setContentText(message)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setContentIntent(pendingIntent)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setAutoCancel(true)
-            .setVibrate(longArrayOf(1000, 1000, 1000))
-            .setLights(Color.RED, 1000, 1000)
-            .setTimeoutAfter(60000)
+            .setContentIntent(pendingIntent)
             .build()
 
-        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE)
-                as NotificationManager
-        notificationManager.notify(BUDGET_ALERT_ID, notification)
+        notificationManager.notify(System.currentTimeMillis().toInt(), notification)
     }
 
-    fun checkAndSendBudgetNotification(context: Context, progress: Int) {
+    fun checkAndSendBudgetNotification(progress: Int) {
         val prefs = context.getSharedPreferences("BudgetPrefs", Context.MODE_PRIVATE)
         val lastNotified = prefs.getInt("lastBudgetNotif", 0)
 
         when {
             progress >= 100 && lastNotified < 100 -> {
-                showBudgetAlert(context, progress)
+                showBudgetAlert(context.getString(R.string.budget_exceeded), "You've spent $progress% of your budget!")
                 prefs.edit().putInt("lastBudgetNotif", 100).apply()
             }
             progress >= 80 && lastNotified < 80 -> {
-                showBudgetAlert(context, progress)
+                showBudgetAlert(context.getString(R.string.budget_warning), "You've spent $progress% of your budget")
                 prefs.edit().putInt("lastBudgetNotif", 80).apply()
             }
             progress >= 50 && lastNotified < 50 -> {
-                showBudgetWarning(context, progress)
+                showBudgetWarning(progress)
                 prefs.edit().putInt("lastBudgetNotif", 50).apply()
             }
             progress < 50 -> prefs.edit().putInt("lastBudgetNotif", 0).apply()
         }
     }
-    // Add these new methods for Import/Export notifications
-    fun showImportSuccess(context: Context, count: Int) {
+
+    fun showImportSuccess(count: Int) {
         val intent = Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
@@ -215,36 +202,41 @@ object NotificationHelper {
 
         val notification = NotificationCompat.Builder(context, IMPORT_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification)
-            .setContentTitle(context.getString(R.string.import_success))
-            .setContentText("$count ${context.getString(R.string.transactions_imported)}")
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setContentIntent(pendingIntent)
+            .setContentTitle("Import Successful")
+            .setContentText("Successfully imported $count transactions")
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setAutoCancel(true)
-            .setVibrate(longArrayOf(500, 500, 500))
-            .setLights(Color.YELLOW, 1000, 1000)
+            .setContentIntent(pendingIntent)
             .build()
 
-        (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
-            .notify(IMPORT_SUCCESS_ID, notification)
+        notificationManager.notify(IMPORT_SUCCESS_ID, notification)
     }
 
-    fun showImportFailure(context: Context, error: String? = null) {
+    fun showImportFailure(error: String) {
+        val intent = Intent(context, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+
+        val pendingIntent = PendingIntent.getActivity(
+            context,
+            0,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
         val notification = NotificationCompat.Builder(context, IMPORT_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification)
-            .setContentTitle(context.getString(R.string.import_failed))
-            .setContentText(error ?: context.getString(R.string.default_import_error))
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setContentTitle("Import Failed")
+            .setContentText(error)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setAutoCancel(true)
-            .setVibrate(longArrayOf(1000, 1000))
-            .setLights(Color.RED, 1000, 1000)
+            .setContentIntent(pendingIntent)
             .build()
 
-        (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
-            .notify(IMPORT_FAILURE_ID, notification)
+        notificationManager.notify(IMPORT_FAILURE_ID, notification)
     }
 
-    // Update existing export methods
-    fun showExportSuccess(context: Context, type: String) {
+    fun showExportSuccess(type: String) {
         val intent = Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
@@ -258,30 +250,17 @@ object NotificationHelper {
 
         val notification = NotificationCompat.Builder(context, EXPORT_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification)
-            .setContentTitle(context.getString(R.string.export_success))
-            .setContentText("${type.uppercase()} ${context.getString(R.string.export_completed)}")
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setContentTitle("Export Successful")
+            .setContentText("Successfully exported $type")
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setAutoCancel(true)
             .setContentIntent(pendingIntent)
-            .setAutoCancel(true)
             .build()
 
-        (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
-            .notify(EXPORT_SUCCESS_ID, notification)
+        notificationManager.notify(EXPORT_SUCCESS_ID, notification)
     }
 
-    fun showExportFailure(context: Context, type: String) {
-        val notification = NotificationCompat.Builder(context, EXPORT_CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_notification)
-            .setContentTitle(context.getString(R.string.export_failed))
-            .setContentText("${type.uppercase()} ${context.getString(R.string.export_failed_message)}")
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setAutoCancel(true)
-            .build()
-
-        (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
-            .notify(EXPORT_SUCCESS_ID, notification)
-    }
-    private fun showBudgetWarning(context: Context, progress: Int) {
+    fun showExportFailure(type: String) {
         val intent = Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
@@ -290,50 +269,60 @@ object NotificationHelper {
             context,
             0,
             intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        val notification = NotificationCompat.Builder(context, EXPORT_CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_notification)
+            .setContentTitle("Export Failed")
+            .setContentText("Failed to export $type")
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setAutoCancel(true)
+            .setContentIntent(pendingIntent)
+            .build()
+
+        notificationManager.notify(EXPORT_SUCCESS_ID, notification)
+    }
+
+    fun showBudgetWarning(progress: Int) {
+        val intent = Intent(context, MainActivity::class.java)
+        val pendingIntent = PendingIntent.getActivity(
+            context,
+            0,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE
         )
 
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle("Budget Warning")
-            .setContentText("You've used $progress% of budget!")
+            .setContentText("You've spent $progress% of your budget")
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setContentIntent(pendingIntent)
             .setAutoCancel(true)
-            .setVibrate(longArrayOf(1000))
-            .setLights(Color.RED, 1000, 1000)
-            .setTimeoutAfter(60000)
+            .setContentIntent(pendingIntent)
             .build()
 
-        (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
-            .notify(BUDGET_WARNING_ID, notification)
+        notificationManager.notify(BUDGET_WARNING_ID, notification)
     }
-    fun showBudgetUpdateNotification(context: Context, title: String, message: String) {
-        val intent = Intent(context, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        }
 
+    fun showBudgetUpdateNotification(title: String, message: String) {
+        val intent = Intent(context, MainActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(
             context,
             0,
             intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            PendingIntent.FLAG_IMMUTABLE
         )
 
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(title)
             .setContentText(message)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setContentIntent(pendingIntent)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setAutoCancel(true)
-            .setVibrate(longArrayOf(500, 500))
-            .setLights(Color.GREEN, 1000, 1000)
-            .setTimeoutAfter(60000)
+            .setContentIntent(pendingIntent)
             .build()
 
-        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE)
-                as NotificationManager
         notificationManager.notify(BUDGET_UPDATE_ID, notification)
     }
 }

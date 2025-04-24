@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.budgetbee.R
 import com.example.budgetbee.databinding.FragmentDashboardBinding
 import com.example.budgetbee.models.Transaction
+import com.example.budgetbee.models.TransactionType
 import com.example.budgetbee.utils.SharedPrefHelper
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.PieData
@@ -44,9 +45,12 @@ class DashboardFragment : Fragment() {
         val transactions = sharedPrefHelper.getTransactions()
         val currentMonth = SimpleDateFormat("yyyy-MM", Locale.getDefault()).format(Date())
 
-        val monthlyTransactions = transactions.filter { it.date.startsWith(currentMonth) }
-        val totalIncome = monthlyTransactions.filter { it.type == "Income" }.sumOf { it.amount }
-        val totalExpenses = monthlyTransactions.filter { it.type == "Expense" }.sumOf { it.amount }
+        val monthlyTransactions = transactions.filter { 
+            val transactionMonth = SimpleDateFormat("yyyy-MM", Locale.getDefault()).format(it.date)
+            transactionMonth == currentMonth 
+        }
+        val totalIncome = monthlyTransactions.filter { it.type == TransactionType.INCOME }.sumOf { it.amount }
+        val totalExpenses = monthlyTransactions.filter { it.type == TransactionType.EXPENSE }.sumOf { it.amount }
         val balance = totalIncome - totalExpenses
 
         binding.apply {
@@ -80,7 +84,7 @@ class DashboardFragment : Fragment() {
     }
 
     private fun setupPieChart(pieChart: PieChart, transactions: List<Transaction>) {
-        val expenseTransactions = transactions.filter { it.type == "Expense" }
+        val expenseTransactions = transactions.filter { it.type == TransactionType.EXPENSE }
         if (expenseTransactions.isEmpty()) {
             pieChart.visibility = View.GONE
             return
@@ -110,9 +114,18 @@ class DashboardFragment : Fragment() {
         }
 
         pieChart.apply {
-            data = PieData(dataSet)
+            data = PieData(dataSet).apply {
+                setValueTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+                setValueTextSize(12f)
+            }
             description.isEnabled = false
-            legend.isEnabled = true
+            legend.apply {
+                isEnabled = true
+                textColor = ContextCompat.getColor(requireContext(), R.color.black)
+                textSize = 12f
+            }
+            setEntryLabelColor(ContextCompat.getColor(requireContext(), R.color.white))
+            setEntryLabelTextSize(12f)
             animateY(1000)
             invalidate()
         }

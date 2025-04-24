@@ -10,6 +10,7 @@ import com.example.budgetbee.R
 import com.example.budgetbee.adapters.CategoryAdapter
 import com.example.budgetbee.databinding.FragmentCategoryAnalysisBinding
 import com.example.budgetbee.models.Category
+import com.example.budgetbee.models.TransactionType
 import com.example.budgetbee.utils.SharedPrefHelper
 import java.text.SimpleDateFormat
 import java.util.*
@@ -40,17 +41,18 @@ class CategoryFragment : Fragment() {
         val currentYear = calendar.get(Calendar.YEAR)
 
         val monthlyExpenses = sharedPrefHelper.getTransactions()
-            .filter {
-                val date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(it.date)
-                val cal = Calendar.getInstance().apply {
-                    if (date != null) {
-                        time = date
-                    }
+            .filter { transaction ->
+                try {
+                    val transactionDate = transaction.date
+                    val transactionCalendar = Calendar.getInstance().apply { time = transactionDate }
+                    transactionCalendar.get(Calendar.MONTH) == currentMonth &&
+                            transactionCalendar.get(Calendar.YEAR) == currentYear &&
+                            transaction.type == TransactionType.EXPENSE
+                } catch (e: Exception) {
+                    false
                 }
-                cal.get(Calendar.MONTH) == currentMonth &&
-                        cal.get(Calendar.YEAR) == currentYear &&
-                        it.type == "Expense"
             }
+
 
         val categories = monthlyExpenses
             .groupBy { it.category }

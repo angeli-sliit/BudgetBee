@@ -20,6 +20,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.budgetbee.R
 import com.example.budgetbee.databinding.FragmentSettingsBinding
 import com.example.budgetbee.models.Transaction
+import com.example.budgetbee.models.TransactionType
 import com.example.budgetbee.utils.AlarmPermissionHelper
 import com.example.budgetbee.utils.DailyReminderReceiver
 import com.example.budgetbee.utils.FileHelper
@@ -28,13 +29,16 @@ import com.example.budgetbee.utils.SharedPrefHelper
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import java.util.UUID
+import java.util.Date
+import java.util.Locale
+import java.text.SimpleDateFormat
 
 class SettingsFragment : Fragment() {
 
     private var _binding: FragmentSettingsBinding? = null
     private val binding get() = _binding!!
     private lateinit var sharedPrefHelper: SharedPrefHelper
+    private lateinit var notificationHelper: NotificationHelper
 
     private val exactAlarmPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -70,6 +74,7 @@ class SettingsFragment : Fragment() {
     ): View {
         _binding = FragmentSettingsBinding.inflate(inflater, container, false)
         sharedPrefHelper = SharedPrefHelper(requireContext())
+        notificationHelper = NotificationHelper(requireContext())
         return binding.root
     }
 
@@ -88,10 +93,7 @@ class SettingsFragment : Fragment() {
             try {
                 val newBudget = binding.etBudget.text.toString().toDouble()
                 sharedPrefHelper.monthlyBudget = newBudget
-                NotificationHelper.showBudgetUpdateNotification(
-                    requireContext(),
-                    "Budget Updated",
-                    "New budget: ${sharedPrefHelper.getFormattedAmount(newBudget)}"
+                notificationHelper.showBudgetUpdateNotification("Budget Updated", "New budget: ${sharedPrefHelper.getFormattedAmount(newBudget)}"
                 )
                 showMessage("Budget updated successfully")
             } catch (e: NumberFormatException) {
@@ -148,8 +150,6 @@ class SettingsFragment : Fragment() {
             } else requestStoragePermission()
         }
 
-
-
         binding.btnImportJson.setOnClickListener {
             importJsonLauncher.launch(arrayOf("application/json"))
         }
@@ -164,15 +164,15 @@ class SettingsFragment : Fragment() {
                 Gson().fromJson<List<Transaction>>(json, type)?.let { transactions ->
                     if (transactions.isNotEmpty()) {
                         sharedPrefHelper.saveTransactions(transactions)
-                        NotificationHelper.showImportSuccess(requireContext(), transactions.size)
+                        notificationHelper.showImportSuccess(transactions.size)
                         navigateToTransactions()
                     } else {
-                        NotificationHelper.showImportFailure(requireContext(), "Empty file")
+                        notificationHelper.showImportFailure("Empty file")
                     }
                 }
             }
         } catch (e: Exception) {
-            NotificationHelper.showImportFailure(requireContext(), "JSON error: ${e.message}")
+            notificationHelper.showImportFailure("JSON error: ${e.message}")
         }
     }
 
@@ -182,7 +182,7 @@ class SettingsFragment : Fragment() {
             requireContext().contentResolver.openInputStream(uri)?.use { stream ->
                 val lines = stream.bufferedReader().readLines()
                 if (lines.size < 3) {
-                    NotificationHelper.showImportFailure(requireContext(), "Invalid format")
+                    notificationHelper.showImportFailure("Invalid format")
                     return
                 }
 
@@ -191,13 +191,13 @@ class SettingsFragment : Fragment() {
                         lines[i].split(',').takeIf { it.size >= 5 }?.let { parts ->
                             add(
                                 Transaction(
-                                    id = UUID.randomUUID().toString(),
-                                    date = parts[0].trim(),
-                                    category = parts[1].trim(),
+                                    id = "0",
+                                    title = parts.getOrNull(5)?.trim() ?: "",
                                     amount = parts[2].trim().toDoubleOrNull() ?: 0.0,
-                                    type = parts[3].trim(),
-                                    note = parts[4].trim(),
-                                    title = parts.getOrNull(5)?.trim() ?: ""
+                                    category = parts[1].trim(),
+                                    date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(parts[0].trim()) ?: Date(),
+                                    type = TransactionType.valueOf(parts[3].trim().uppercase()),
+                                    description = parts[4].trim()
                                 )
                             )
                         }
@@ -206,14 +206,14 @@ class SettingsFragment : Fragment() {
 
                 if (transactions.isNotEmpty()) {
                     sharedPrefHelper.saveTransactions(transactions)
-                    NotificationHelper.showImportSuccess(requireContext(), transactions.size)
+                    notificationHelper.showImportSuccess(transactions.size)
                     navigateToTransactions()
                 } else {
-                    NotificationHelper.showImportFailure(requireContext(), "No valid data")
+                    notificationHelper.showImportFailure("No valid data")
                 }
             }
         } catch (e: Exception) {
-            NotificationHelper.showImportFailure(requireContext(), "Text error: ${e.message}")
+            notificationHelper.showImportFailure("Text error: ${e.message}")
         }
     }
 
@@ -223,8 +223,8 @@ class SettingsFragment : Fragment() {
 
     private fun executeExport(exportOperation: () -> Boolean) {
         val success = exportOperation()
-        if (success) NotificationHelper.showExportSuccess(requireContext(), "Export")
-        else NotificationHelper.showExportFailure(requireContext(), "Export")
+        if (success) notificationHelper.showExportSuccess("Export")
+        else notificationHelper.showExportFailure("Export")
         showMessage(if (success) "Export successful" else "Export failed")
     }
 

@@ -7,7 +7,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.budgetbee.R
 import com.example.budgetbee.databinding.ItemTransactionBinding
 import com.example.budgetbee.models.Transaction
+import com.example.budgetbee.models.TransactionType
 import com.example.budgetbee.utils.SharedPrefHelper
+import java.text.SimpleDateFormat
+import java.util.*
 
 class TransactionAdapter(
     var transactions: List<Transaction>,
@@ -17,20 +20,23 @@ class TransactionAdapter(
     private val context: Context
 ) : RecyclerView.Adapter<TransactionAdapter.TransactionViewHolder>() {
 
+    private val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+
     inner class TransactionViewHolder(private val binding: ItemTransactionBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(transaction: Transaction) {
             binding.apply {
-                txtTitle.text = transaction.title
-                txtAmount.text = sharedPrefHelper.getFormattedAmount(transaction.amount)
-                txtCategory.text = transaction.category
-                txtDate.text = transaction.date
+                transactionTitle.text = transaction.title
+                transactionAmount.text = sharedPrefHelper.getFormattedAmount(transaction.amount)
+                transactionCategory.text = transaction.category
+                transactionDate.text = dateFormat.format(transaction.date)
+                transactionType.text = transaction.type?.name ?: "Unknown"
 
-                if (transaction.type == "Expense") {
-                    txtAmount.setTextColor(context.getColor(R.color.expense_color))
+                if (transaction.type == TransactionType.EXPENSE) {
+                    transactionAmount.setTextColor(context.getColor(R.color.expense_color))
                 } else {
-                    txtAmount.setTextColor(context.getColor(R.color.income_color))
+                    transactionAmount.setTextColor(context.getColor(R.color.income_color))
                 }
 
                 root.setOnClickListener { onEdit(transaction) }
