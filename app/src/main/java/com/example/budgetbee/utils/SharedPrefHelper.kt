@@ -3,6 +3,7 @@ package com.example.budgetbee.utils
 import android.content.Context
 import android.content.SharedPreferences
 import com.example.budgetbee.models.Transaction
+import com.example.budgetbee.models.TransactionType
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.text.SimpleDateFormat
@@ -48,13 +49,20 @@ class SharedPrefHelper(private val context: Context) {
 
         val currentMonth = SimpleDateFormat("yyyy-MM", Locale.getDefault()).format(Date())
         val monthlyExpenses = transactions
-            .filter { it.date.startsWith(currentMonth) && it.type == "Expense" }
+            .filter { 
+                val transactionMonth = SimpleDateFormat("yyyy-MM", Locale.getDefault()).format(it.date)
+                transactionMonth == currentMonth && it.type == TransactionType.EXPENSE 
+            }
             .sumOf { it.amount }
 
         val progress = (monthlyExpenses / budget * 100).toInt()
 
-        if ((progress >= 80 || progress >= 100) && !lastBudgetAlertShown) {
-            NotificationHelper.showBudgetAlert(context, progress)
+        if (progress >= 80 && !lastBudgetAlertShown) {
+            val notificationHelper = NotificationHelper(context)
+            notificationHelper.showBudgetAlert(
+                "Budget Warning",
+                "You've spent $progress% of your monthly budget"
+            )
             lastBudgetAlertShown = true
         } else if (progress < 80) {
             lastBudgetAlertShown = false
@@ -68,7 +76,10 @@ class SharedPrefHelper(private val context: Context) {
     fun getMonthlyExpenses(): Double {
         val currentMonth = SimpleDateFormat("yyyy-MM", Locale.getDefault()).format(Date())
         return getTransactions()
-            .filter { it.date.startsWith(currentMonth) && it.type == "Expense" }
+            .filter { 
+                val transactionMonth = SimpleDateFormat("yyyy-MM", Locale.getDefault()).format(it.date)
+                transactionMonth == currentMonth && it.type == TransactionType.EXPENSE 
+            }
             .sumOf { it.amount }
     }
 }

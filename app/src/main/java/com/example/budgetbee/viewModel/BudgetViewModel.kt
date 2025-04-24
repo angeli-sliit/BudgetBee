@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.budgetbee.models.Transaction
+import com.example.budgetbee.models.TransactionType
 import com.example.budgetbee.utils.SharedPrefHelper
 import kotlinx.coroutines.launch
 
@@ -25,7 +26,7 @@ class BudgetViewModel(application: Application) : AndroidViewModel(application) 
 
             val budget = sharedPrefHelper.monthlyBudget
             val expenses = currentTransactions
-                .filter { it.type == "Expense" }
+                .filter { it.type == TransactionType.EXPENSE }
                 .sumOf { it.amount }
 
             val progress = if (budget > 0) (expenses / budget * 100).toInt() else 0

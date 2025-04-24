@@ -15,7 +15,8 @@ class DailyReminderReceiver : BroadcastReceiver() {
         val sharedPrefHelper = SharedPrefHelper(context)
         if (sharedPrefHelper.dailyReminderEnabled) {
             // Show both notification and system alarm
-            NotificationHelper.showDailyReminder(context)
+            val notificationHelper = NotificationHelper(context)
+            notificationHelper.showDailyReminder()
             triggerAlarmClock(context)
             setNextAlarm(context)
         }
@@ -44,8 +45,8 @@ class DailyReminderReceiver : BroadcastReceiver() {
     }
     companion object {
         private const val TAG = "DailyReminderReceiver"
-        private const val ALARM_HOUR = 21 // 8 PM
-        private const val ALARM_MINUTE = 17
+        private const val ALARM_HOUR = 8 // 8 PM
+        private const val ALARM_MINUTE = 53
 
         fun setNextAlarm(context: Context) {
             val sharedPrefHelper = SharedPrefHelper(context)

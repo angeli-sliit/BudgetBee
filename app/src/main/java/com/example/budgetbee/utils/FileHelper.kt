@@ -14,6 +14,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import com.example.budgetbee.R
 import com.example.budgetbee.models.Transaction
+import com.example.budgetbee.models.TransactionType
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.text.SimpleDateFormat
@@ -102,8 +103,8 @@ object FileHelper {
             yPos += 20f
 
             // Budget Data
-            val income = transactions.filter { it.type == "Income" }.sumOf { it.amount }
-            val expenses = transactions.filter { it.type == "Expense" }.sumOf { it.amount }
+            val income = transactions.filter { it.type == TransactionType.INCOME }.sumOf { it.amount }
+            val expenses = transactions.filter { it.type == TransactionType.EXPENSE }.sumOf { it.amount }
             val budget = sharedPrefHelper.monthlyBudget
 
             paint.textSize = 14f
@@ -127,7 +128,7 @@ object FileHelper {
             // Category breakdown
             paint.textSize = 14f
             paint.color = android.graphics.Color.BLACK
-            transactions.filter { it.type == "Expense" }
+            transactions.filter { it.type == TransactionType.EXPENSE }
                 .groupBy { it.category }
                 .forEach { (category, trans) ->
                     val sum = trans.sumOf { it.amount }

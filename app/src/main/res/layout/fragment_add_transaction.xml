@@ -4,7 +4,8 @@
     android:id="@+id/addTransactionLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="?android:windowBackground">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,68 +16,76 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Title">
+            android:hint="Title"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            app:startIconTint="@color/md_theme_light_primary">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:inputType="text" />
+                android:inputType="text"
+                android:maxLines="1" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Amount -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:hint="Amount">
+            android:layout_marginTop="16dp"
+            android:hint="Amount"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            app:startIconTint="@color/md_theme_light_primary">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etAmount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:inputType="numberDecimal" />
+                android:inputType="numberDecimal"
+                android:maxLines="1" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Date -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:hint="Date">
+            android:layout_marginTop="16dp"
+            android:hint="Date"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            app:startIconTint="@color/md_theme_light_primary">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
                 android:clickable="true"
                 android:focusable="false"
                 android:inputType="none" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Category Spinner -->
-        <TextView
-            android:layout_width="wrap_content"
+        <!-- Category -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Category"
-            android:textStyle="bold" />
+            android:hint="Category"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            app:startIconTint="@color/md_theme_light_primary">
 
-        <Spinner
-            android:id="@+id/spCategory"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            <AutoCompleteTextView
+                android:id="@+id/spCategory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Type Toggle Button -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="24dp"
             android:text="Transaction Type"
-            android:textStyle="bold" />
+            android:textAppearance="@style/TextAppearance.Material3.TitleMedium" />
 
         <com.google.android.material.button.MaterialButtonToggleGroup
             android:id="@+id/toggleType"
@@ -92,12 +101,12 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Income"
-                android:textColor="@color/black"
-                android:textSize="12sp"
-                app:backgroundTint="@color/background"
-                app:iconTint="@color/gray"
+                android:textColor="@color/md_theme_light_onSurface"
+                android:textSize="14sp"
+                app:iconTint="@color/income_color"
                 app:rippleColor="@color/income_color"
-                app:strokeColor="@color/primary" />
+                app:strokeColor="@color/primary"
+               />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnExpense"
@@ -106,11 +115,11 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Expense"
-                android:textColor="@color/black"
-                android:textSize="12sp"
-                app:backgroundTint="@color/background"
+                android:textSize="14sp"
+                app:iconTint="@color/expense_color"
                 app:rippleColor="@color/expense_color"
-                app:strokeColor="@color/primary" />
+                app:strokeColor="@color/expense_color"
+                />
         </com.google.android.material.button.MaterialButtonToggleGroup>
 
         <!-- Save Button -->

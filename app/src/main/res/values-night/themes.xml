@@ -1,24 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!-- Dark mode colors -->
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="gray">#B0B0B0</color>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Theme.BudgetBee" parent="Theme.Material3.Dark.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">#FFB300</item>
+        <item name="colorOnPrimary">#000000</item>
+        <item name="colorPrimaryContainer">#FFE082</item>
+        <item name="colorOnPrimaryContainer">#FF6F00</item>
 
-    <!-- BudgetBee Theme Dark -->
-    <color name="primary">#81C784</color> <!-- Lighter green for dark bg -->
-    <color name="primary_dark">#66BB6A</color>
-    <color name="accent">#FFD54F</color> <!-- Softer honey -->
-    <color name="secondary">#FFB300</color> <!-- Deeper amber -->
-    <color name="background">#121212</color> <!-- True dark bg -->
-    <color name="text_primary">#FFFFFF</color>
-    <color name="text_secondary">#B0B0B0</color>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">#80CBC4</item>
+        <item name="colorOnSecondary">#000000</item>
+        <item name="colorSecondaryContainer">#26A69A</item>
+        <item name="colorOnSecondaryContainer">#E0F2F1</item>
 
-    <!-- Income & Expense -->
-    <color name="income_color">#81C784</color>
-    <color name="expense_color">#E57373</color>
+        <!-- Tertiary brand color. -->
+        <item name="colorTertiary">#7986CB</item>
+        <item name="colorOnTertiary">#000000</item>
+        <item name="colorTertiaryContainer">#3F51B5</item>
+        <item name="colorOnTertiaryContainer">#E8EAF6</item>
 
-    <!-- Optional UI Colors -->
-    <color name="button_color">#26A69A</color> <!-- Cool teal -->
-    <color name="card_bg">#1E1E1E</color>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">#000000</item>
+        <item name="android:navigationBarColor">#1E1E1E</item>
+
+        <!-- Error colors -->
+        <item name="colorError">#EF5350</item>
+        <item name="colorOnError">#000000</item>
+        <item name="colorErrorContainer">#B71C1C</item>
+        <item name="colorOnErrorContainer">#FFCDD2</item>
+
+        <!-- Surface colors -->
+        <item name="android:colorBackground">#000000</item>
+        <item name="colorOnBackground">#FFFFFF</item>
+        <item name="colorSurface">#1E1E1E</item>
+        <item name="colorOnSurface">#FFFFFF</item>
+        <item name="colorSurfaceVariant">#1E1E1E</item>
+        <item name="colorOnSurfaceVariant">#E0E0E0</item>
+
+        <!-- Outline colors -->
+        <item name="colorOutlineVariant">#757575</item>
+        <item name="colorOutline">#9E9E9E</item>
+
+        <!-- Additional customizations -->
+    </style>
 </resources>
