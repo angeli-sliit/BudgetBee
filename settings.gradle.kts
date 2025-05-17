@@ -16,8 +16,12 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+<<<<<<< HEAD
         gradlePluginPortal()
         maven { url = uri("https://jitpack.io")}
+=======
+        maven { url = uri("https://jitpack.io") }
+>>>>>>> 5th
     }
 }
 

@@ -1,99 +1,107 @@
 package com.example.budgetbee.viewModel
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import android.util.Log
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import com.example.budgetbee.models.AppDatabase
 import com.example.budgetbee.models.Transaction
-import com.example.budgetbee.models.TransactionType
 import com.example.budgetbee.repository.TransactionRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import java.util.*
-import javax.inject.Inject
 
-@HiltViewModel
-class TransactionViewModel @Inject constructor(
+class TransactionViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: TransactionRepository
-) : ViewModel() {
-
-    private val _transactions = MutableStateFlow<List<Transaction>>(emptyList())
-    val transactions: StateFlow<List<Transaction>> = _transactions.asStateFlow()
-
-    private val _totalIncome = MutableStateFlow(0.0)
-    val totalIncome: StateFlow<Double> = _totalIncome.asStateFlow()
-
-    private val _totalExpense = MutableStateFlow(0.0)
-    val totalExpense: StateFlow<Double> = _totalExpense.asStateFlow()
-
-    private val _categories = MutableStateFlow<List<String>>(emptyList())
-    val categories: StateFlow<List<String>> = _categories.asStateFlow()
+    private var currentUserId: Long? = null
+    private val TAG = "TransactionViewModel"
 
     init {
-        viewModelScope.launch {
-            repository.getAllTransactions().collect { transactions ->
-                _transactions.value = transactions
-                updateTotals(transactions)
-            }
-        }
+        val transactionDao = AppDatabase.getDatabase(application).transactionDao()
+        repository = TransactionRepository(transactionDao)
     }
 
-    private fun updateTotals(transactions: List<Transaction>) {
-        _totalIncome.value = transactions
-            .filter { it.type == TransactionType.INCOME }
-            .sumOf { it.amount }
-
-        _totalExpense.value = transactions
-            .filter { it.type == TransactionType.EXPENSE }
-            .sumOf { it.amount }
+    fun setCurrentUserId(userId: Long) {
+        currentUserId = userId
+        Log.d(TAG, "Current user ID set to: $userId")
     }
 
-    fun addTransaction(transaction: Transaction) {
-        viewModelScope.launch {
+    fun getTransactions(): LiveData<List<Transaction>> {
+        val userId = currentUserId ?: throw IllegalStateException("User ID not set")
+        Log.d(TAG, "Getting transactions for user: $userId")
+        return repository.getTransactionsByUser(userId)
+    }
+
+    fun getTransactionsByType(type: String): LiveData<List<Transaction>> {
+        val userId = currentUserId ?: throw IllegalStateException("User ID not set")
+        Log.d(TAG, "Getting transactions of type $type for user: $userId")
+        return repository.getTransactionsByType(userId, type)
+    }
+
+    fun getTransactionsByMonth(month: String): LiveData<List<Transaction>> {
+        val userId = currentUserId ?: throw IllegalStateException("User ID not set")
+        Log.d(TAG, "Getting transactions for month $month, user: $userId")
+        return repository.getTransactionsByMonth(userId, month)
+    }
+
+    suspend fun saveTransaction(transaction: Transaction) {
+        try {
+            Log.d(TAG, "Saving transaction: ${transaction.id}")
             repository.insertTransaction(transaction)
+            Log.d(TAG, "Transaction saved successfully")
+        } catch (e: Exception) {
+            Log.e(TAG, "Error saving transaction: ${e.message}", e)
+            throw e
         }
     }
 
     fun updateTransaction(transaction: Transaction) {
         viewModelScope.launch {
-            repository.updateTransaction(transaction)
+            try {
+                Log.d(TAG, "Updating transaction: ${transaction.id}")
+                repository.updateTransaction(transaction)
+                Log.d(TAG, "Transaction updated successfully")
+            } catch (e: Exception) {
+                Log.e(TAG, "Error updating transaction: ${e.message}", e)
+                throw e
+            }
         }
     }
 
     fun deleteTransaction(transaction: Transaction) {
         viewModelScope.launch {
-            repository.deleteTransaction(transaction)
-        }
-    }
-
-    fun getTransactionsByType(type: TransactionType) {
-        viewModelScope.launch {
-            repository.getTransactionsByType(type).collect { transactions ->
-                _transactions.value = transactions
+            try {
+                Log.d(TAG, "Deleting transaction: ${transaction.id}")
+                repository.deleteTransaction(transaction)
+                Log.d(TAG, "Transaction deleted successfully")
+            } catch (e: Exception) {
+                Log.e(TAG, "Error deleting transaction: ${e.message}", e)
+                throw e
             }
         }
     }
 
-    fun getTransactionsByCategory(category: String) {
-        viewModelScope.launch {
-            repository.getTransactionsByCategory(category).collect { transactions ->
-                _transactions.value = transactions
-            }
-        }
+    fun createTransaction(
+        title: String,
+        amount: Double,
+        type: String,
+        category: String,
+        date: String,
+        note: String = ""
+    ): Transaction {
+        val userId = currentUserId ?: throw IllegalStateException("User ID not set")
+        Log.d(TAG, "Creating new transaction for user: $userId")
+        return repository.createTransaction(
+            userId = userId,
+            title = title,
+            amount = amount,
+            type = type,
+            category = category,
+            date = date,
+            note = note
+        )
     }
 
-    fun getTransactionsBetweenDates(startDate: Date, endDate: Date) {
-        viewModelScope.launch {
-            repository.getTransactionsBetweenDates(startDate, endDate).collect { transactions ->
-                _transactions.value = transactions
-            }
-        }
-    }
-
-    fun loadCategories(type: TransactionType) {
-        viewModelScope.launch {
-            repository.getCategoriesByType(type).collect { categories ->
-                _categories.value = categories
-            }
-        }
+    suspend fun getTransactionsByMonthOnce(userId: Long, month: String): List<Transaction> {
+        return repository.getTransactionsByMonthOnce(userId, month)
     }
 } 

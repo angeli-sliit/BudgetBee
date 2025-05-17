@@ -1,42 +1,48 @@
 package com.example.budgetbee.adapters
 
-import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.budgetbee.R
 import com.example.budgetbee.databinding.ItemTransactionBinding
 import com.example.budgetbee.models.Transaction
-import com.example.budgetbee.models.TransactionType
 import com.example.budgetbee.utils.SharedPrefHelper
-import java.text.SimpleDateFormat
-import java.util.*
 
 class TransactionAdapter(
     var transactions: List<Transaction>,
+    currencyCode: String,
     private val onEdit: (Transaction) -> Unit,
-    private val onDelete: (Transaction) -> Unit,
-    private val sharedPrefHelper: SharedPrefHelper,
-    private val context: Context
-) : RecyclerView.Adapter<TransactionAdapter.TransactionViewHolder>() {
+    private val onDelete: (Transaction) -> Unit
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+    var currencyCode: String = currencyCode
+        set(value) {
+            if (field != value) {
+                field = value
+                notifyDataSetChanged()
+            }
+        }
+
+    companion object {
+        private const val VIEW_TYPE_TRANSACTION = 0
+        private const val VIEW_TYPE_EMPTY = 1
+    }
 
     inner class TransactionViewHolder(private val binding: ItemTransactionBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(transaction: Transaction) {
             binding.apply {
-                transactionTitle.text = transaction.title
-                transactionAmount.text = sharedPrefHelper.getFormattedAmount(transaction.amount)
-                transactionCategory.text = transaction.category
-                transactionDate.text = dateFormat.format(transaction.date)
-                transactionType.text = transaction.type?.name ?: "Unknown"
+                txtTitle.text = transaction.title
+                txtAmount.text = SharedPrefHelper(root.context).getFormattedAmount(transaction.amount, currencyCode)
+                txtCategory.text = transaction.category
+                txtDate.text = transaction.date
 
-                if (transaction.type == TransactionType.EXPENSE) {
-                    transactionAmount.setTextColor(context.getColor(R.color.expense_color))
+                if (transaction.type == "Expense") {
+                    txtAmount.setTextColor(root.context.getColor(R.color.expense_color))
                 } else {
-                    transactionAmount.setTextColor(context.getColor(R.color.income_color))
+                    txtAmount.setTextColor(root.context.getColor(R.color.income_color))
                 }
 
                 root.setOnClickListener { onEdit(transaction) }
@@ -48,20 +54,43 @@ class TransactionAdapter(
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionViewHolder {
+    inner class EmptyViewHolder(private val binding: ItemTransactionBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        init {
+            binding.apply {
+                txtTitle.text = "No transactions yet"
+                txtAmount.visibility = View.GONE
+                txtCategory.visibility = View.GONE
+                txtDate.visibility = View.GONE
+            }
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return if (transactions.isEmpty()) VIEW_TYPE_EMPTY else VIEW_TYPE_TRANSACTION
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val binding = ItemTransactionBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
         )
-        return TransactionViewHolder(binding)
+        return when (viewType) {
+            VIEW_TYPE_TRANSACTION -> TransactionViewHolder(binding)
+            VIEW_TYPE_EMPTY -> EmptyViewHolder(binding)
+            else -> throw IllegalArgumentException("Invalid view type")
+        }
     }
 
-    override fun onBindViewHolder(holder: TransactionViewHolder, position: Int) {
-        holder.bind(transactions[position])
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when (holder) {
+            is TransactionViewHolder -> holder.bind(transactions[position])
+            is EmptyViewHolder -> { /* Empty state is handled in the ViewHolder */ }
+        }
     }
 
-    override fun getItemCount() = transactions.size
+    override fun getItemCount() = if (transactions.isEmpty()) 1 else transactions.size
 
     fun updateTransactions(newTransactions: List<Transaction>) {
         transactions = newTransactions

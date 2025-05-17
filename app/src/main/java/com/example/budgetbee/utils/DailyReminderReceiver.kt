@@ -11,42 +11,25 @@ import com.example.budgetbee.activities.MainActivity
 import java.util.Calendar
 
 class DailyReminderReceiver : BroadcastReceiver() {
-    override fun onReceive(context: Context, intent: Intent?) {
+    override fun onReceive(context: Context, intent: Intent) {
         val sharedPrefHelper = SharedPrefHelper(context)
         if (sharedPrefHelper.dailyReminderEnabled) {
-            // Show both notification and system alarm
-            val notificationHelper = NotificationHelper(context)
-            notificationHelper.showDailyReminder()
-            triggerAlarmClock(context)
+            // Start the alarm activity
+            val alarmIntent = Intent(context, com.example.budgetbee.activities.AlarmActivity::class.java).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            }
+            context.startActivity(alarmIntent)
+            
+            // Set the next alarm
             setNextAlarm(context)
         }
     }
-    private fun triggerAlarmClock(context: Context) {
-        val alarmIntent = Intent(context, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        }
-        val pendingIntent = PendingIntent.getActivity(
-            context,
-            0,
-            alarmIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
 
-        val alarmClockInfo = AlarmManager.AlarmClockInfo(
-            System.currentTimeMillis(),
-            pendingIntent
-        )
-
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmManager.setAlarmClock(
-            alarmClockInfo,
-            pendingIntent
-        )
-    }
     companion object {
         private const val TAG = "DailyReminderReceiver"
-        private const val ALARM_HOUR = 8 // 8 PM
-        private const val ALARM_MINUTE = 53
+        private const val ALARM_HOUR = 20
+        private const val ALARM_MINUTE = 0
 
         fun setNextAlarm(context: Context) {
             val sharedPrefHelper = SharedPrefHelper(context)
@@ -60,7 +43,10 @@ class DailyReminderReceiver : BroadcastReceiver() {
                 return
             }
 
-            val intent = Intent(context, DailyReminderReceiver::class.java)
+            val intent = Intent(context, DailyReminderReceiver::class.java).apply {
+                action = "com.example.budgetbee.DAILY_REMINDER"
+            }
+            
             val pendingIntent = PendingIntent.getBroadcast(
                 context,
                 0,
@@ -68,11 +54,14 @@ class DailyReminderReceiver : BroadcastReceiver() {
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
 
-            // Set alarm for specified time (8 PM)
+            // Set alarm for specified time
             val calendar = Calendar.getInstance().apply {
                 timeInMillis = System.currentTimeMillis()
-                set(Calendar.HOUR_OF_DAY, ALARM_HOUR) // 22 (10 PM)
-                set(Calendar.MINUTE, ALARM_MINUTE)    // 29
+                set(Calendar.HOUR_OF_DAY, ALARM_HOUR)
+                set(Calendar.MINUTE, ALARM_MINUTE)
+                set(Calendar.SECOND, 0)
+                set(Calendar.MILLISECOND, 0)
+                
                 // If time already passed, add 1 day
                 if (timeInMillis <= System.currentTimeMillis()) {
                     add(Calendar.DAY_OF_YEAR, 1)
@@ -80,11 +69,19 @@ class DailyReminderReceiver : BroadcastReceiver() {
             }
 
             try {
-                alarmManager.setExactAndAllowWhileIdle(
-                    AlarmManager.RTC_WAKEUP,
-                    calendar.timeInMillis,
-                    pendingIntent
-                )
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    alarmManager.setExactAndAllowWhileIdle(
+                        AlarmManager.RTC_WAKEUP,
+                        calendar.timeInMillis,
+                        pendingIntent
+                    )
+                } else {
+                    alarmManager.setExact(
+                        AlarmManager.RTC_WAKEUP,
+                        calendar.timeInMillis,
+                        pendingIntent
+                    )
+                }
                 Log.d(TAG, "Daily reminder alarm set for ${calendar.time}")
             } catch (e: SecurityException) {
                 Log.e(TAG, "Failed to set exact alarm: ${e.message}")
@@ -93,7 +90,9 @@ class DailyReminderReceiver : BroadcastReceiver() {
 
         fun cancelAlarm(context: Context) {
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            val intent = Intent(context, DailyReminderReceiver::class.java)
+            val intent = Intent(context, DailyReminderReceiver::class.java).apply {
+                action = "com.example.budgetbee.DAILY_REMINDER"
+            }
             val pendingIntent = PendingIntent.getBroadcast(
                 context,
                 0,

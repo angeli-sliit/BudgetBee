@@ -2,21 +2,22 @@ package com.example.budgetbee.utils
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import com.example.budgetbee.models.Transaction
-import com.example.budgetbee.models.TransactionType
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.text.SimpleDateFormat
 import java.util.*
+import java.text.NumberFormat
+import java.util.Currency
 
 class SharedPrefHelper(private val context: Context) {
     private val sharedPref: SharedPreferences =
         context.getSharedPreferences("BudgetBeePrefs", Context.MODE_PRIVATE)
     private val gson = Gson()
-    private var lastBudgetAlertShown = false
 
     var currency: String
-        get() = sharedPref.getString("currency", "$") ?: "$"
+        get() = sharedPref.getString("currency", "USD") ?: "USD"
         set(value) = sharedPref.edit().putString("currency", value).apply()
 
     var monthlyBudget: Double
@@ -27,59 +28,51 @@ class SharedPrefHelper(private val context: Context) {
         get() = sharedPref.getBoolean("dailyReminder", true)
         set(value) = sharedPref.edit().putBoolean("dailyReminder", value).apply()
 
-    fun saveTransactions(transactions: List<Transaction>) {
-        val json = gson.toJson(transactions)
-        sharedPref.edit().putString("transactions", json).apply()
-        checkBudget(transactions)
+    var loggedInUserId: Long
+        get() = sharedPref.getLong("logged_in_user_id", -1L)
+        set(value) = sharedPref.edit().putLong("logged_in_user_id", value).apply()
+
+    fun clearLoggedInUser() {
+        sharedPref.edit().remove("logged_in_user_id").apply()
     }
 
-    fun getTransactions(): List<Transaction> {
-        val json = sharedPref.getString("transactions", null)
-        return if (json != null) {
-            val type = object : TypeToken<List<Transaction>>() {}.type
-            gson.fromJson(json, type) ?: emptyList()
-        } else {
+    fun saveTransactions(transactions: List<Transaction>, userId: Long) {
+        try {
+            val json = gson.toJson(transactions)
+            sharedPref.edit()
+                .putString("transactions_$userId", json)
+                .apply()
+        } catch (e: Exception) {
+            Log.e("SharedPrefHelper", "Error saving transactions: ", e)
+        }
+    }
+
+    fun getTransactions(userId: Long): List<Transaction> {
+        return try {
+            val json = sharedPref.getString("transactions_$userId", null)
+            if (!json.isNullOrEmpty()) {
+                val type = object : TypeToken<List<Transaction>>() {}.type
+                gson.fromJson(json, type) ?: emptyList()
+            } else {
+                emptyList()
+            }
+        } catch (e: Exception) {
+            Log.e("SharedPrefHelper", "Error getting transactions: ", e)
             emptyList()
         }
     }
 
-    private fun checkBudget(transactions: List<Transaction>) {
-        val budget = monthlyBudget
-        if (budget <= 0) return
+    fun getCurrentMonthTransactions(userId: Long): List<Transaction> {
+        val currentMonth = java.text.SimpleDateFormat("yyyy-MM", java.util.Locale.getDefault()).format(java.util.Date())
+        return getTransactions(userId).filter { it.date.startsWith(currentMonth) }
+    }
 
-        val currentMonth = SimpleDateFormat("yyyy-MM", Locale.getDefault()).format(Date())
-        val monthlyExpenses = transactions
-            .filter { 
-                val transactionMonth = SimpleDateFormat("yyyy-MM", Locale.getDefault()).format(it.date)
-                transactionMonth == currentMonth && it.type == TransactionType.EXPENSE 
-            }
-            .sumOf { it.amount }
-
-        val progress = (monthlyExpenses / budget * 100).toInt()
-
-        if (progress >= 80 && !lastBudgetAlertShown) {
-            val notificationHelper = NotificationHelper(context)
-            notificationHelper.showBudgetAlert(
-                "Budget Warning",
-                "You've spent $progress% of your monthly budget"
-            )
-            lastBudgetAlertShown = true
-        } else if (progress < 80) {
-            lastBudgetAlertShown = false
+    fun getFormattedAmount(amount: Double, currencyCode: String): String {
+        val symbol = try { java.util.Currency.getInstance(currencyCode).symbol } catch (e: Exception) { "$" }
+        return if (amount % 1.0 == 0.0) {
+            "$symbol${amount.toInt()}"
+        } else {
+            "$symbol${amount}".replace(Regex("""\.0+"""), "")
         }
-    }
-
-    fun getFormattedAmount(amount: Double): String {
-        return String.format(Locale.getDefault(), "$currency%.2f", amount)
-    }
-
-    fun getMonthlyExpenses(): Double {
-        val currentMonth = SimpleDateFormat("yyyy-MM", Locale.getDefault()).format(Date())
-        return getTransactions()
-            .filter { 
-                val transactionMonth = SimpleDateFormat("yyyy-MM", Locale.getDefault()).format(it.date)
-                transactionMonth == currentMonth && it.type == TransactionType.EXPENSE 
-            }
-            .sumOf { it.amount }
     }
 }

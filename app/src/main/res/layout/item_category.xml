@@ -5,14 +5,31 @@
     android:orientation="horizontal"
     android:padding="16dp">
 
+    <ImageView
+        android:id="@+id/ivCategoryIcon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginEnd="12dp"
+        android:src="@drawable/ic_category" />
+
     <TextView
         android:id="@+id/tvCategoryName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="Category"
-        android:textSize="16sp"
-        android:textColor="?attr/colorOnSurface"/>
+        android:textSize="16sp"/>
+
+    <TextView
+        android:id="@+id/tvCategoryType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Type"
+        android:textSize="14sp"
+        android:textColor="#888888"
+        android:layout_gravity="center_vertical"
+        android:layout_marginEnd="12dp"/>
 
     <TextView
         android:id="@+id/tvCategoryAmount"
@@ -20,6 +37,5 @@
         android:layout_height="wrap_content"
         android:text="$0.00"
         android:textSize="16sp"
-        android:textStyle="bold"
-        android:textColor="?attr/colorOnSurface" />
+        android:textStyle="bold"/>
 </LinearLayout>

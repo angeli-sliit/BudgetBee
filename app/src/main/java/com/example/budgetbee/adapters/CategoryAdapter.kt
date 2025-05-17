@@ -1,35 +1,62 @@
 package com.example.budgetbee.adapters
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.budgetbee.R
+import com.example.budgetbee.databinding.ItemCategoryBinding
 import com.example.budgetbee.models.Category
+import com.example.budgetbee.utils.SharedPrefHelper
 
-class CategoryAdapter(private val categories: List<Category>) :
-    RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
-
-    inner class CategoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val tvName: TextView = itemView.findViewById(R.id.tvCategoryName)
-        private val tvAmount: TextView = itemView.findViewById(R.id.tvCategoryAmount)
-
-        fun bind(category: Category) {
-            tvName.text = category.name
-            tvAmount.text = "$${String.format("%.2f", category.amount)}"
-        }
-    }
+class CategoryAdapter(
+    private val currencyCode: String,
+    private val onItemClick: (Category) -> Unit
+) : ListAdapter<Category, CategoryAdapter.CategoryViewHolder>(CategoryDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_category, parent, false)
-        return CategoryViewHolder(view)
+        val binding = ItemCategoryBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        return CategoryViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
-        holder.bind(categories[position])
+        holder.bind(getItem(position))
     }
 
-    override fun getItemCount() = categories.size
+    inner class CategoryViewHolder(
+        private val binding: ItemCategoryBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            binding.root.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    onItemClick(getItem(position))
+                }
+            }
+        }
+
+        fun bind(category: Category) {
+            binding.apply {
+                ivCategoryIcon.setImageResource(category.iconResId)
+                tvCategoryName.text = category.name
+                tvCategoryType.text = category.type
+                tvCategoryAmount.text = SharedPrefHelper(root.context).getFormattedAmount(category.amount, currencyCode)
+            }
+        }
+    }
+
+    private class CategoryDiffCallback : DiffUtil.ItemCallback<Category>() {
+        override fun areItemsTheSame(oldItem: Category, newItem: Category): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: Category, newItem: Category): Boolean {
+            return oldItem == newItem
+        }
+    }
 }

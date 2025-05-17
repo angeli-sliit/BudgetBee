@@ -1,46 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="Theme.BudgetBee" parent="Theme.Material3.Dark.NoActionBar">
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">#FFB300</item>
-        <item name="colorOnPrimary">#000000</item>
-        <item name="colorPrimaryContainer">#FFE082</item>
-        <item name="colorOnPrimaryContainer">#FF6F00</item>
+    <style name="Theme.BudgetBee" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryVariant">@color/primary_dark</item>
+        <item name="colorOnPrimary">@color/white</item>
 
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">#80CBC4</item>
-        <item name="colorOnSecondary">#000000</item>
-        <item name="colorSecondaryContainer">#26A69A</item>
-        <item name="colorOnSecondaryContainer">#E0F2F1</item>
+        <item name="colorSecondary">@color/accent</item>
+        <item name="colorSecondaryVariant">@color/secondary</item>
+        <item name="colorOnSecondary">@color/black</item>
 
-        <!-- Tertiary brand color. -->
-        <item name="colorTertiary">#7986CB</item>
-        <item name="colorOnTertiary">#000000</item>
-        <item name="colorTertiaryContainer">#3F51B5</item>
-        <item name="colorOnTertiaryContainer">#E8EAF6</item>
-
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor">#000000</item>
-        <item name="android:navigationBarColor">#1E1E1E</item>
-
-        <!-- Error colors -->
-        <item name="colorError">#EF5350</item>
-        <item name="colorOnError">#000000</item>
-        <item name="colorErrorContainer">#B71C1C</item>
-        <item name="colorOnErrorContainer">#FFCDD2</item>
-
-        <!-- Surface colors -->
-        <item name="android:colorBackground">#000000</item>
-        <item name="colorOnBackground">#FFFFFF</item>
-        <item name="colorSurface">#1E1E1E</item>
-        <item name="colorOnSurface">#FFFFFF</item>
-        <item name="colorSurfaceVariant">#1E1E1E</item>
-        <item name="colorOnSurfaceVariant">#E0E0E0</item>
-
-        <!-- Outline colors -->
-        <item name="colorOutlineVariant">#757575</item>
-        <item name="colorOutline">#9E9E9E</item>
-
-        <!-- Additional customizations -->
+        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <item name="android:windowBackground">@color/background</item>
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_secondary</item>
     </style>
 </resources>

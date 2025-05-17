@@ -6,19 +6,27 @@
     app:startDestination="@id/dashboardFragment">
 
     <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.budgetbee.fragments.LoginFragment"
+        android:label="Login"
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/action_loginFragment_to_signupFragment"
+            app:destination="@id/signupFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/signupFragment"
+        android:name="com.example.budgetbee.fragments.SignupFragment"
+        android:label="Sign Up"
+        tools:layout="@layout/fragment_signup">
+    </fragment>
+
+    <fragment
         android:id="@+id/dashboardFragment"
         android:name="com.example.budgetbee.fragments.DashboardFragment"
         android:label="Dashboard"
         tools:layout="@layout/fragment_dashboard">
-        <action
-            android:id="@+id/action_dashboardFragment_to_transactionsFragment"
-            app:destination="@id/transactionsFragment" />
-        <action
-            android:id="@+id/action_dashboardFragment_to_addTransactionFragment"
-            app:destination="@id/addTransactionFragment" />
-        <action
-            android:id="@+id/action_dashboardFragment_to_budgetFragment"
-            app:destination="@id/budgetFragment" />
         <action
             android:id="@+id/action_dashboardFragment_to_settingsFragment"
             app:destination="@id/settingsFragment" />
@@ -35,6 +43,11 @@
         <action
             android:id="@+id/action_transactionsFragment_to_addTransactionFragment"
             app:destination="@id/addTransactionFragment" />
+        <action
+            android:id="@+id/action_transactionsFragment_to_loginFragment"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
@@ -60,10 +73,4 @@
         android:name="com.example.budgetbee.fragments.CategoryFragment"
         android:label="Category Analysis"
         tools:layout="@layout/fragment_category_analysis" />
-
-    <fragment
-        android:id="@+id/budgetFragment"
-        android:name="com.example.budgetbee.fragments.BudgetFragment"
-        android:label="Budget"
-        tools:layout="@layout/fragment_budget" />
 </navigation>

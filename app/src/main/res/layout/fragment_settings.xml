@@ -19,6 +19,24 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
+        <!-- Current Monthly Budget Display -->
+        <TextView
+            android:id="@+id/tvCurrentBudget"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Current: --"
+            android:textSize="14sp"
+            android:textColor="@android:color/darker_gray"
+            android:layout_marginBottom="4dp"/>
+
+        <!-- Loading Spinner -->
+        <ProgressBar
+            android:id="@+id/progressBudgetLoading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:visibility="gone"/>
+
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

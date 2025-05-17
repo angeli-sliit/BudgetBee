@@ -1,42 +1,86 @@
 package com.example.budgetbee.repository
 
-import com.example.budgetbee.data.TransactionDao
+import android.util.Log
+import androidx.lifecycle.LiveData
 import com.example.budgetbee.models.Transaction
-import com.example.budgetbee.models.TransactionType
-import kotlinx.coroutines.flow.Flow
-import java.util.Date
-import javax.inject.Inject
-import javax.inject.Singleton
+import com.example.budgetbee.models.TransactionDao
+import java.util.UUID
 
-@Singleton
-class TransactionRepository @Inject constructor(
-    private val transactionDao: TransactionDao
-) {
-    fun getAllTransactions(): Flow<List<Transaction>> = transactionDao.getAllTransactions()
+class TransactionRepository(private val transactionDao: TransactionDao) {
+    private val TAG = "TransactionRepository"
 
-    fun getTransactionsByType(type: TransactionType): Flow<List<Transaction>> =
-        transactionDao.getTransactionsByType(type)
+    fun getTransactionsByUser(userId: Long): LiveData<List<Transaction>> {
+        return transactionDao.getTransactionsByUser(userId)
+    }
 
-    fun getTransactionsByCategory(category: String): Flow<List<Transaction>> =
-        transactionDao.getTransactionsByCategory(category)
+    fun getTransactionsByType(userId: Long, type: String): LiveData<List<Transaction>> {
+        return transactionDao.getTransactionsByType(userId, type)
+    }
 
-    fun getTransactionsBetweenDates(startDate: Date, endDate: Date): Flow<List<Transaction>> =
-        transactionDao.getTransactionsBetweenDates(startDate, endDate)
+    fun getTransactionsByMonth(userId: Long, month: String): LiveData<List<Transaction>> {
+        return transactionDao.getTransactionsByMonth(userId, month)
+    }
 
-    suspend fun getTotalAmountByTypeAndDateRange(type: TransactionType, startDate: Date, endDate: Date): Double =
-        transactionDao.getTotalAmountByTypeAndDateRange(type, startDate, endDate) ?: 0.0
-
-    suspend fun insertTransaction(transaction: Transaction) = transactionDao.insertTransaction(transaction)
-
-    suspend fun updateTransaction(transaction: Transaction) = transactionDao.updateTransaction(transaction)
-
-    suspend fun deleteTransaction(transaction: Transaction) = transactionDao.deleteTransaction(transaction)
-
-    fun getCategoriesByType(type: TransactionType): Flow<List<String>> = transactionDao.getCategoriesByType(type)
-
-    suspend fun insertAll(transactions: List<Transaction>) {
-        transactions.forEach { transaction ->
+    suspend fun insertTransaction(transaction: Transaction) {
+        try {
+            Log.d(TAG, "Inserting transaction: ${transaction.id}")
             transactionDao.insertTransaction(transaction)
+            Log.d(TAG, "Transaction inserted successfully")
+        } catch (e: Exception) {
+            Log.e(TAG, "Error inserting transaction: ${e.message}", e)
+            throw e
         }
+    }
+
+    suspend fun updateTransaction(transaction: Transaction) {
+        try {
+            Log.d(TAG, "Updating transaction: ${transaction.id}")
+            transactionDao.updateTransaction(transaction)
+            Log.d(TAG, "Transaction updated successfully")
+        } catch (e: Exception) {
+            Log.e(TAG, "Error updating transaction: ${e.message}", e)
+            throw e
+        }
+    }
+
+    suspend fun deleteTransaction(transaction: Transaction) {
+        try {
+            Log.d(TAG, "Deleting transaction: ${transaction.id}")
+            transactionDao.deleteTransaction(transaction)
+            Log.d(TAG, "Transaction deleted successfully")
+        } catch (e: Exception) {
+            Log.e(TAG, "Error deleting transaction: ${e.message}", e)
+            throw e
+        }
+    }
+
+    suspend fun deleteAllTransactions(userId: Long) {
+        transactionDao.deleteAllTransactions(userId)
+    }
+
+    fun createTransaction(
+        userId: Long,
+        title: String,
+        amount: Double,
+        type: String,
+        category: String,
+        date: String,
+        note: String = ""
+    ): Transaction {
+        Log.d(TAG, "Creating new transaction for user: $userId")
+        return Transaction(
+            id = UUID.randomUUID().toString(),
+            userId = userId,
+            title = title,
+            amount = amount,
+            type = type,
+            category = category,
+            date = date,
+            note = note
+        )
+    }
+
+    suspend fun getTransactionsByMonthOnce(userId: Long, month: String): List<Transaction> {
+        return transactionDao.getTransactionsByMonthOnce(userId, month)
     }
 } 

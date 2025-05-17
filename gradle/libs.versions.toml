@@ -16,10 +16,14 @@ gson = "2.10.1"
 materialDateTimePicker = "4.2.3"
 mpAndroidChart = "3.1.0"
 uiGraphicsAndroid = "1.7.8"
+<<<<<<< HEAD
 hilt = "2.48"
 core = "1.16.0"
 hiltCommon = "1.2.0"
 identityJvm = "202411.1"
+=======
+firebaseAuthKtx = "22.3.1"
+>>>>>>> 5th
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -40,12 +44,20 @@ gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 material-datetime-picker = { group = "com.wdullaer", name = "materialdatetimepicker", version.ref = "materialDateTimePicker" }
 mp-android-chart = { group = "com.github.PhilJay", name = "MPAndroidChart", version.ref = "mpAndroidChart" }
 androidx-ui-graphics-android = { group = "androidx.compose.ui", name = "ui-graphics-android", version.ref = "uiGraphicsAndroid" }
+<<<<<<< HEAD
 androidx-core = { group = "androidx.core", name = "core", version.ref = "core" }
 androidx-hilt-common = { group = "androidx.hilt", name = "hilt-common", version.ref = "hiltCommon" }
 identity-jvm = { group = "com.android.identity", name = "identity-jvm", version.ref = "identityJvm" }
+=======
+firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx", version.ref = "firebaseAuthKtx" }
+>>>>>>> 5th
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+<<<<<<< HEAD
 androidx-navigation-safe-args = { id = "androidx.navigation.safeargs.kotlin", version.ref = "navigation" }
 hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+=======
+androidx-navigation-safe-args = { id = "androidx.navigation.safeargs.kotlin", version.ref = "navigation" }
+>>>>>>> 5th

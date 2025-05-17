@@ -1,72 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Base Material Colors -->
-    <color name="black">#212121</color>
-    <color name="white">#FFFFFF</color>
-    <color name="gray">#9E9E9E</color>
+    <!-- Base Material Colors (optional fallback) -->
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="gray">#808080</color>
 
-    <!-- Legacy color references -->
-    <color name="primary">@color/md_theme_light_primary</color>
-    <color name="primary_dark">@color/md_theme_light_primaryContainer</color>
-    <color name="secondary">@color/md_theme_light_secondary</color>
-    <color name="background">@color/ic_launcher_background</color>
+    <!-- BudgetBee Theme -->
+    <color name="primary">#FF6200EE</color>
+    <color name="primary_dark">#FF3700B3</color>
+    <color name="accent">#FF03DAC5</color>
+    <color name="secondary">#FF018786</color>
+    <color name="background">#FDF6DF</color>
+    <color name="text_primary">#212121</color>
+    <color name="text_secondary">#424242</color>
 
-    <!-- Light Theme Colors -->
-    <color name="md_theme_light_primary">#007F5F</color> <!-- Refined dark green -->
-    <color name="md_theme_light_onPrimary">#FFFFFF</color>
-    <color name="md_theme_light_primaryContainer">#A1E8D9</color>
-    <color name="md_theme_light_onPrimaryContainer">#002D1F</color>
-    <color name="md_theme_light_secondary">#FF9800</color> <!-- Brand orange -->
-    <color name="md_theme_light_onSecondary">#212121</color>
-    <color name="md_theme_light_secondaryContainer">#FFE0B2</color>
-    <color name="md_theme_light_onSecondaryContainer">#001E2D</color>
-    <color name="md_theme_light_tertiary">#4B6D92</color>
-    <color name="md_theme_light_onTertiary">#FFFFFF</color>
-    <color name="md_theme_light_tertiaryContainer">#D6EFFF</color>
-    <color name="md_theme_light_onTertiaryContainer">#001E2D</color>
-    <color name="md_theme_light_error">#D32F2F</color>
-    <color name="md_theme_light_errorContainer">#FFCDD2</color>
-    <color name="md_theme_light_onError">#FFFFFF</color>
-    <color name="md_theme_light_onErrorContainer">#B71C1C</color>
-    <color name="md_theme_light_background">#FAFAFA</color>
-    <color name="md_theme_light_onBackground">#1A1A1A</color>
-    <color name="md_theme_light_surface">#B2DFDB</color>
-    <color name="md_theme_light_onSurface">#212121</color>
-    <color name="md_theme_light_surfaceVariant">#E0E0E0</color>
-    <color name="md_theme_light_onSurfaceVariant">#424242</color>
-    <color name="md_theme_light_outline">#BDBDBD</color>
-    <color name="md_theme_light_outlineVariant">#EEEEEE</color>
+    <!-- Income & Expense -->
+    <color name="income_color">#FF4CAF50</color>
+    <color name="expense_color">#FFFF5252</color>
+    <color name="income_background">#E8F5E9</color>
+    <color name="expense_background">#FFEBEE</color>
 
-    <!-- Dark Theme Colors -->
-    <color name="md_theme_dark_primary">#64FFDA</color>          <!-- Brighter teal for better visibility -->
-    <color name="md_theme_dark_onPrimary">#00251A</color>
-    <color name="md_theme_dark_primaryContainer">#00796B</color>
-    <color name="md_theme_dark_onPrimaryContainer">#B2DFDB</color>
-    <color name="md_theme_dark_secondary">#FFB74D</color>        <!-- Brighter orange -->
-    <color name="md_theme_dark_onSecondary">#000000</color>
-    <color name="md_theme_dark_secondaryContainer">#FF9800</color>
-    <color name="md_theme_dark_onSecondaryContainer">#FFFFFF</color>
-    <color name="md_theme_dark_tertiary">#90CAF9</color>
-    <color name="md_theme_dark_onTertiary">#000000</color>
-    <color name="md_theme_dark_tertiaryContainer">#1976D2</color>
-    <color name="md_theme_dark_onTertiaryContainer">#E3F2FD</color>
-    <color name="md_theme_dark_error">#FF8A80</color>           <!-- Brighter error color -->
-    <color name="md_theme_dark_errorContainer">#D32F2F</color>
-    <color name="md_theme_dark_onError">#000000</color>
-    <color name="md_theme_dark_onErrorContainer">#FFFFFF</color>
-    <color name="md_theme_dark_background">#121212</color>
-    <color name="md_theme_dark_onBackground">#F5F5F5</color>
-    <color name="md_theme_dark_surface">#1E1E1E</color>
-    <color name="md_theme_dark_onSurface">#FFFFFF</color>
-    <color name="md_theme_dark_surfaceVariant">#2C2C2C</color>
-    <color name="md_theme_dark_onSurfaceVariant">#E0E0E0</color>
-    <color name="md_theme_dark_outline">#9E9E9E</color>
-    <color name="md_theme_dark_outlineVariant">#757575</color>
-
-    <!-- App Specific Colors -->
-    <color name="expense_color">#D32F2F</color> <!-- Clear, financial red -->
-    <color name="income_color">#2E7D32</color>  <!-- Financial green -->
-    <color name="accent">#FFB300</color>        <!-- Brighter bee yellow-orange -->
-    <color name="button_color">#00897B</color>  <!-- Teal-green action button -->
+    <color name="button_color">#FF6200EE</color>
     <color name="card_bg">#FFFFFF</color>
+
+    <color name="error_color">#FFB00020</color>
+    <color name="success_color">#FF4CAF50</color>
 </resources>
