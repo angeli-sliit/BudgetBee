@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base Material Colors (optional fallback) -->
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="gray">#808080</color>
+
+    <!-- BudgetBee Theme -->
+    <color name="primary">#FF6200EE</color>
+    <color name="primary_dark">#FF3700B3</color>
+    <color name="accent">#FF03DAC5</color>
+    <color name="secondary">#FF018786</color>
+    <color name="background">#FDF6DF</color>
+    <color name="text_primary">#212121</color>
+    <color name="text_secondary">#424242</color>
+
+    <!-- Income & Expense -->
+    <color name="income_color">#FF4CAF50</color>
+    <color name="expense_color">#FFFF5252</color>
+    <color name="income_background">#E8F5E9</color>
+    <color name="expense_background">#FFEBEE</color>
+
+    <color name="button_color">#FF6200EE</color>
+    <color name="card_bg">#FFFFFF</color>
+
+    <color name="error_color">#FFB00020</color>
+    <color name="success_color">#FF4CAF50</color>
+</resources>

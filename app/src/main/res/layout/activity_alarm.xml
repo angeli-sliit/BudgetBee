@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="30dp">
+
+    <ImageView
+        android:id="@+id/logoImageView"
+        android:layout_width="255dp"
+        android:layout_height="276dp"
+        android:layout_marginTop="-100dp"
+        android:contentDescription="BudgetBee Logo"
+        android:src="@mipmap/ic_launcher_round"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvAlarmMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="128dp"
+        android:layout_marginBottom="32dp"
+        android:gravity="center"
+        android:text="It's time to track your expenses!"
+        android:textColor="@color/button_color"
+        android:textSize="34sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/btnDismissAlarm"
+        android:layout_width="174dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/mdtp_date_picker_year_selector"
+        android:text="Dismiss"
+        android:textColor="@android:color/holo_orange_light"
+        android:textSize="18sp" />
+
+</LinearLayout>
