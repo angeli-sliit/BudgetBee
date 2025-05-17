@@ -34,7 +34,7 @@ Built as part of the **IT2010 – Mobile Application Development Lab Exam (Lab E
 - **Language:** Kotlin
 - **Framework:** Android SDK
 - **UI:** Material Design 3
-- **Data Storage:** SharedPreferences, Internal Storage
+- **Data Storage:** Room Database (ORM), SharedPreferences, Internal Storage
 - **Architecture:** MVVM (optional)
 - **Navigation:** Jetpack Navigation Component
 
